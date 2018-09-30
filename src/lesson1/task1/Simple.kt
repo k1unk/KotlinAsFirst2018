@@ -1,6 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson1.task1
 
+import java.lang.Math.pow
 import kotlin.math.*
 
 /**
@@ -69,7 +71,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int =
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
-        ( sagenes * ( 48 / 1 )  + arshins * ( 48 / 3 )  + vershoks ) * ( 4.445 / 100 )
+        (sagenes * (48 / 1) + arshins * (48 / 3) + vershoks) * (4.445 / 100)
 
 /**
  * Тривиальная
@@ -78,7 +80,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(grad: Int, min: Int, sec: Int): Double =
-        ( grad  + min / 60.00  + sec / 60.00 / 60.00 ) * (PI / 180.00)
+        (grad + min / 60.00 + sec / 60.00 / 60.00) * (PI / 180.00)
 
 /**
  * Тривиальная
@@ -115,7 +117,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double =
-        initial * Math.pow ( percent / 100.0 + 1 , 3.0)
+        initial * pow(percent / 100.0 + 1, 3.0)
 
 /**
  * Простая
@@ -123,4 +125,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double =
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = number % 10 * 100 + ( number / 10 ) % 10 * 10 + number / 100
+fun numberRevert(number: Int): Int = number % 10 * 100 + number / 10 % 10 * 10 + number / 100
