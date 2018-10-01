@@ -67,7 +67,7 @@ fun ageDescription(age: Int): String =
         when {
             ((age % 100 != 11) && (age % 10 == 1)) -> "$age год"
             ((age % 10 in 2..4) && (age % 100 !in 12..14)) -> "$age года"
-            ((age % 10 in 5..9) || (age % 100 in 10..19)) -> "$age лет"
+            ((age % 10 in 5..9) || (age % 10 == 0) || (age % 100 in 10..19)) -> "$age лет"
             else -> "несуществующий возраст"
         }
 
