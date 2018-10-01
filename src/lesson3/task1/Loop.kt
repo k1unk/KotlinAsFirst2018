@@ -44,7 +44,7 @@ fun isPerfect(n: Int): Boolean {
         sum += m
         if (sum > n) break
     }
-    return sum  == n
+    return sum == n
 }
 
 /**
