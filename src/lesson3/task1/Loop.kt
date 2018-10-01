@@ -66,7 +66,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var k = 0
+    var l = n
+    if (n == 0) k = 1 else
+        while (l > 0) {
+            k++; l = l / 10
+        }
+    return k
+}
 
 /**
  * Простая
@@ -74,7 +82,15 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    var k = 1
+    var l = 1
+    var u = 1
+    for (p in 3..n) {
+        u = k + l; k = l; l = u
+    }
+    return u
+}
 
 /**
  * Простая
@@ -82,21 +98,39 @@ fun fib(n: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var k = 2
+    while (k % m != 0 || k % n != 0) {
+        k++
+    }
+    return k
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var k = 2
+    while (n % k != 0) {
+        k++
+    }
+    return k
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var k = n - 1
+    while (n % k != 0) {
+        k--
+    }
+    return k
+}
 
 /**
  * Простая
@@ -105,7 +139,13 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var d = 0
+    for (k in 2..m) {
+        if (m % k == 0 && n % k == 0) d++
+    }
+    return if (d == 0) true else false
+}
 
 /**
  * Простая
@@ -114,7 +154,13 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    var k = 0
+    while (k * k < m) {
+        k++
+    }
+    return if (k * k <= n && n != Int.MAX_VALUE) true else false
+}
 
 /**
  * Средняя
@@ -132,7 +178,18 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var k = x
+    var c = 0
+    while (k > 1) {
+        if (k % 2 == 0) {
+            k = k / 2; c++
+        } else {
+            k = k * 3 + 1; c++
+        }
+    }
+    return c
+}
 
 /**
  * Средняя
@@ -159,7 +216,14 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var k = 0
+    var u = n
+    while (u > 0) {
+        k = k * 10 + u % 10; u = u / 10
+    }
+    return k
+}
 
 /**
  * Средняя
@@ -170,7 +234,14 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var k = 0
+    var u = n
+    while (u > 0) {
+        k = k * 10 + u % 10; u = u / 10
+    }
+    return if (k == n) true else false
+}
 
 /**
  * Средняя
@@ -180,7 +251,16 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var k = 0
+    var l = n
+    while (l > 9) {
+        if (l % 10 !== l / 10 % 10) {
+            k = 1; l = 0
+        } else l = l / 10
+    }
+    return if (k == 1) true else false
+}
 
 /**
  * Сложная
