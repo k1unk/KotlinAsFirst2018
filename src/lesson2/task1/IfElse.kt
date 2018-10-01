@@ -63,16 +63,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    if (0 < age && 200 > age)
+fun ageDescription(age: Int): String =
         when {
-            ((age % 100 != 11) && (age % 10 == 1)) -> return "$age год"
-            (age % 10 in 2..4) && (age % 100 !in 12..14) -> return "$age года"
-            (age % 10 in 5..9) || (age % 100 in 11..19) -> return "$age лет"
-            else -> return "несуществующий возраст"
+            ((age % 100 != 11) && (age % 10 == 1)) -> "$age год"
+            ((age % 10 in 2..4) && (age % 100 !in 12..14)) -> "$age года"
+            ((age % 10 in 5..9) || (age % 100 in 10..19)) -> "$age лет"
+            else -> "несуществующий возраст"
         }
-    else return "несуществующий возраст"
-}
 
 /**
  * Простая
@@ -84,12 +81,13 @@ fun ageDescription(age: Int): String {
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
-    var t = 0.0000000000000000000000000000000000000000000000
-    var s = t1 * v1 + t2 * v2 + t3 * v3
-    if (t1 * v1 > t2 * v2 + t3 * v3) t = (s - t3 * v3 - t2 * v2 - (t1 * v1 - s / 2)) / v1
-    else if (t1 * v1 + t2 * v2 < t3 * v3) t = t1 + t2 + (s / 2 - t1 * v1 - t2 * v2) / v3
-    else t = t1 + (s / 2 - t1 * v1) / v2
-    return t
+    var t = 0.0
+    val s = t1 * v1 + t2 * v2 + t3 * v3
+    return when {
+        t1 * v1 > t2 * v2 + t3 * v3 -> (s - t3 * v3 - t2 * v2 - (t1 * v1 - s / 2)) / v1
+        t1 * v1 + t2 * v2 < t3 * v3 -> t1 + t2 + (s / 2 - t1 * v1 - t2 * v2) / v3
+        else -> t1 + (s / 2 - t1 * v1) / v2
+    }
 }
 
 /**
@@ -103,12 +101,12 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int {
-    return if ((kingX == rookX1 || kingY == rookY1) && (kingX !== rookX2 && kingY !== rookY2)) 1
-    else if ((kingX !== rookX1 && kingY !== rookY1) && (kingX == rookX2 || kingY == rookY2)) 2
-    else if ((kingX == rookX1 || kingY == rookY1) && (kingX == rookX2 || kingY == rookY2)) 3
-    else 0
-}
+                       rookX2: Int, rookY2: Int): Int =
+        when {((kingX == rookX1 || kingY == rookY1) && (kingX !== rookX2 && kingY !== rookY2)) -> 1
+            ((kingX !== rookX1 && kingY !== rookY1) && (kingX == rookX2 || kingY == rookY2)) -> 2
+            ((kingX == rookX1 || kingY == rookY1) && (kingX == rookX2 || kingY == rookY2)) -> 3
+            else -> 0
+        }
 
 /**
  * Простая
@@ -122,15 +120,15 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int {
-    return if ((kingX == rookX || kingY == rookY) &&
-            ((kingX + kingY) !== (bishopX + bishopY) && ((kingX - kingY) !== (bishopX - bishopY)))) 1
-    else if ((kingX !== rookX && kingY !== rookY) &&
-            ((kingX + kingY) == (bishopX + bishopY) || (kingX - kingY) == (bishopX - bishopY))) 2
-    else if ((kingX == rookX || kingY == rookY) &&
-            (((kingX + kingY) == (bishopX + bishopY) || (kingX - kingY) == (bishopX - bishopY)))) 3
-    else 0
-}
+                          bishopX: Int, bishopY: Int): Int =
+        when { ((kingX == rookX || kingY == rookY) &&
+                ((kingX + kingY) !== (bishopX + bishopY) && ((kingX - kingY) !== (bishopX - bishopY)))) -> 1
+            ((kingX !== rookX && kingY !== rookY) &&
+                    ((kingX + kingY) == (bishopX + bishopY) || (kingX - kingY) == (bishopX - bishopY))) -> 2
+            ((kingX == rookX || kingY == rookY) &&
+                    (((kingX + kingY) == (bishopX + bishopY) || (kingX - kingY) == (bishopX - bishopY)))) -> 3
+            else -> 0
+        }
 
 /**
  * Простая
@@ -141,12 +139,19 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a + b > c && b + c > a && c + a > b) when {
-        a * a + b * b < c * c || b * b + c * c < a * a || c * c + a * a < b * b -> return 2
-        a * a + b * b == c * c || b * b + c * c == a * a || c * c + a * a == b * b -> return 1
-        a * a + b * b > c * c || b * b + c * c > a * a || c * c + a * a > b * b -> return 0
-        else -> return -1
-    }
+    var v = 0.0
+    var n = 0.0
+    var f = 0.0
+    v = maxOf(a, b, c)
+    n = minOf(a, b, c)
+    f = a + b + c - v - n
+    if (v < a + b + c - v)
+        return when {
+            f * f + n * n < v * v -> return 2
+            f * f + n * n == v * v -> return 1
+            f * f + n * n > v * v -> return 0
+            else -> -1
+        }
     else return -1
 }
 
@@ -160,8 +165,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
-        if (c in a..b && b <= d) b - c else
-            if (a in c..d && d <= b) d - a else
-                if (c in a..d && d <= b) d - c else
-                    if (a in c..b && b <= d) b - a else
-                        -1
+        if (minOf(b, d) >= maxOf(a, c)) {
+            minOf(b, d) - maxOf(a, c)
+        } else -1
+

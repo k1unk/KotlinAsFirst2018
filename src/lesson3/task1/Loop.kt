@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -38,7 +39,7 @@ fun isPrime(n: Int): Boolean {
  */
 fun isPerfect(n: Int): Boolean {
     var sum = 1
-    for (m in 2..n/2) {
+    for (m in 2..n / 2) {
         if (n % m > 0) continue
         sum += m
         if (sum > n) break
@@ -68,7 +69,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var k = 0
-    var l = n
+    var l = abs(n)
     if (n == 0) k = 1 else
         while (l > 0) {
             k++; l = l / 10
@@ -99,7 +100,7 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = 2
+    var k = 1
     while (k % m != 0 || k % n != 0) {
         k++
     }
@@ -124,13 +125,8 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var k = n - 1
-    while (n % k != 0) {
-        k--
-    }
-    return k
-}
+fun maxDivisor(n: Int): Int =
+        n / minDivisor(n)
 
 /**
  * Простая
@@ -159,7 +155,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     while (k * k < m) {
         k++
     }
-    return if (k * k <= n && n != Int.MAX_VALUE) true else false
+    return if ((k * k <= n && n != Int.MAX_VALUE) || (m < 2147395600 && n == Int.MAX_VALUE)) true else false
 }
 
 /**
@@ -182,11 +178,8 @@ fun collatzSteps(x: Int): Int {
     var k = x
     var c = 0
     while (k > 1) {
-        if (k % 2 == 0) {
-            k = k / 2; c++
-        } else {
-            k = k * 3 + 1; c++
-        }
+        if (k % 2 == 0) k = k / 2
+        else k = k * 3 + 1; c++
     }
     return c
 }
@@ -240,7 +233,7 @@ fun isPalindrome(n: Int): Boolean {
     while (u > 0) {
         k = k * 10 + u % 10; u = u / 10
     }
-    return if (k == n) true else false
+    return k == n
 }
 
 /**
@@ -259,7 +252,7 @@ fun hasDifferentDigits(n: Int): Boolean {
             k = 1; l = 0
         } else l = l / 10
     }
-    return if (k == 1) true else false
+    return k == 1
 }
 
 /**
