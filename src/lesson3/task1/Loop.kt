@@ -72,7 +72,8 @@ fun digitNumber(n: Int): Int {
     var l = abs(n)
     if (n == 0) k = 1 else
         while (l > 0) {
-            k++; l = l / 10
+            k++
+            l = l / 10
         }
     return k
 }
@@ -88,7 +89,9 @@ fun fib(n: Int): Int {
     var l = 1
     var u = 1
     for (p in 3..n) {
-        u = k + l; k = l; l = u
+        u = k + l
+        k = l
+        l = u
     }
     return u
 }
@@ -140,7 +143,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     for (k in 2..m) {
         if (m % k == 0 && n % k == 0) d++
     }
-    return if (d == 0) true else false
+    return d == 0
 }
 
 /**
@@ -155,7 +158,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     while (k * k < m) {
         k++
     }
-    return if ((k * k <= n && n != Int.MAX_VALUE) || (m < 2147395600 && n == Int.MAX_VALUE)) true else false
+    return k * k <= n && n != Int.MAX_VALUE
 }
 
 /**
@@ -179,7 +182,8 @@ fun collatzSteps(x: Int): Int {
     var c = 0
     while (k > 1) {
         if (k % 2 == 0) k = k / 2
-        else k = k * 3 + 1; c++
+        else k = k * 3 + 1
+        c++
     }
     return c
 }
@@ -213,7 +217,8 @@ fun revert(n: Int): Int {
     var k = 0
     var u = n
     while (u > 0) {
-        k = k * 10 + u % 10; u = u / 10
+        k = k * 10 + u % 10
+        u = u / 10
     }
     return k
 }
@@ -231,7 +236,8 @@ fun isPalindrome(n: Int): Boolean {
     var k = 0
     var u = n
     while (u > 0) {
-        k = k * 10 + u % 10; u = u / 10
+        k = k * 10 + u % 10
+        u = u / 10
     }
     return k == n
 }
@@ -249,7 +255,8 @@ fun hasDifferentDigits(n: Int): Boolean {
     var l = n
     while (l > 9) {
         if (l % 10 !== l / 10 % 10) {
-            k = 1; l = 0
+            k = 1
+            l = 0
         } else l = l / 10
     }
     return k == 1

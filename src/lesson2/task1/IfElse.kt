@@ -81,7 +81,6 @@ fun ageDescription(age: Int): String =
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
-    var t = 0.0
     val s = t1 * v1 + t2 * v2 + t3 * v3
     return when {
         t1 * v1 > t2 * v2 + t3 * v3 -> (s - t3 * v3 - t2 * v2 - (t1 * v1 - s / 2)) / v1
@@ -101,12 +100,15 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int =
-        when {((kingX == rookX1 || kingY == rookY1) && (kingX !== rookX2 && kingY !== rookY2)) -> 1
-            ((kingX !== rookX1 && kingY !== rookY1) && (kingX == rookX2 || kingY == rookY2)) -> 2
-            ((kingX == rookX1 || kingY == rookY1) && (kingX == rookX2 || kingY == rookY2)) -> 3
-            else -> 0
-        }
+                       rookX2: Int, rookY2: Int): Int {
+    val k = (kingX == rookX1 || kingY == rookY1)
+    val l = (kingX == rookX2 || kingY == rookY2)
+    return when {k && !l -> 1
+        !k && l -> 2
+        k && l -> 3
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -120,15 +122,17 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int =
-        when { ((kingX == rookX || kingY == rookY) &&
-                ((kingX + kingY) !== (bishopX + bishopY) && ((kingX - kingY) !== (bishopX - bishopY)))) -> 1
-            ((kingX !== rookX && kingY !== rookY) &&
-                    ((kingX + kingY) == (bishopX + bishopY) || (kingX - kingY) == (bishopX - bishopY))) -> 2
-            ((kingX == rookX || kingY == rookY) &&
-                    (((kingX + kingY) == (bishopX + bishopY) || (kingX - kingY) == (bishopX - bishopY)))) -> 3
-            else -> 0
-        }
+                          bishopX: Int, bishopY: Int): Int {
+    val k = (kingX + kingY) == (bishopX + bishopY)
+    val l = (kingX - kingY) == (bishopX - bishopY)
+    val u = (kingX == rookX || kingY == rookY)
+    return when {
+        u && !k && !l -> 1
+        !u && (k || l) -> 2
+        u && (k || l) -> 3
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -142,17 +146,19 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     var v = 0.0
     var n = 0.0
     var f = 0.0
+    var r = 0.0
     v = maxOf(a, b, c)
     n = minOf(a, b, c)
     f = a + b + c - v - n
-    if (v < a + b + c - v)
+    r = f * f + n * n - v * v
+    if (v < a + b + c - v) {
         return when {
-            f * f + n * n < v * v -> return 2
-            f * f + n * n == v * v -> return 1
-            f * f + n * n > v * v -> return 0
+            r < 0 -> return 2
+            r == 0.0 -> return 1
+            r > 0 -> return 0
             else -> -1
         }
-    else return -1
+    } else return -1
 }
 
 
