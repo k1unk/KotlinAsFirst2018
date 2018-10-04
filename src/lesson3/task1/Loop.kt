@@ -232,15 +232,8 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var k = 0
-    var u = n
-    while (u > 0) {
-        k = k * 10 + u % 10
-        u = u / 10
-    }
-    return k == n
-}
+fun isPalindrome(n: Int): Boolean =
+        n == revert(n)
 
 /**
  * Средняя
