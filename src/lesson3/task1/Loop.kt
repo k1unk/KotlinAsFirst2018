@@ -158,7 +158,8 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     while (k * k < m) {
         k++
     }
-    return k * k <= n && n != Int.MAX_VALUE
+    return (k * k <= n && n != Int.MAX_VALUE) ||
+            (m < 2147395600 && n == Int.MAX_VALUE) // 2147395600 - наибольший квадрат, который меньше Int.MAX_VALUE
 }
 
 /**
