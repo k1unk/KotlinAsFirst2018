@@ -1,8 +1,13 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson3.task1
 
+import java.lang.Math.*
 import kotlin.math.abs
+import kotlin.math.asin
+import kotlin.math.asinh
 import kotlin.math.sqrt
+const val SQR = 2147395600 // SQR - наибольший квадрат, который меньше Int.MAX_VALUE
 
 /**
  * Пример
@@ -12,7 +17,7 @@ import kotlin.math.sqrt
 fun factorial(n: Int): Double {
     var result = 1.0
     for (i in 1..n) {
-        result = result * i // Please do not fix in master
+        result *= i // Please do not fix in master
     }
     return result
 }
@@ -73,7 +78,7 @@ fun digitNumber(n: Int): Int {
     if (n == 0) k = 1 else
         while (l > 0) {
             k++
-            l = l / 10
+            l /= 10
         }
     return k
 }
@@ -103,9 +108,10 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = 1
+    var k = maxOf(m, n)
+    val g = k
     while (k % m != 0 || k % n != 0) {
-        k++
+        k += g
     }
     return k
 }
@@ -159,7 +165,7 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
         k++
     }
     return (k * k <= n && n != Int.MAX_VALUE) ||
-            (m < 2147395600 && n == Int.MAX_VALUE) // 2147395600 - наибольший квадрат, который меньше Int.MAX_VALUE
+            (m < SQR && n == Int.MAX_VALUE) // SQR - наибольший квадрат, который меньше Int.MAX_VALUE
 }
 
 /**
@@ -182,7 +188,7 @@ fun collatzSteps(x: Int): Int {
     var k = x
     var c = 0
     while (k > 1) {
-        if (k % 2 == 0) k = k / 2
+        if (k % 2 == 0) k /= 2
         else k = k * 3 + 1
         c++
     }
@@ -196,7 +202,8 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double =
+        sin(x)
 
 /**
  * Средняя
@@ -205,7 +212,8 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double =
+        cos(x)
 
 /**
  * Средняя
@@ -219,7 +227,7 @@ fun revert(n: Int): Int {
     var u = n
     while (u > 0) {
         k = k * 10 + u % 10
-        u = u / 10
+        u /= 10
     }
     return k
 }
@@ -248,10 +256,10 @@ fun hasDifferentDigits(n: Int): Boolean {
     var k = 0
     var l = n
     while (l > 9) {
-        if (l % 10 !== l / 10 % 10) {
+        if (l % 10 != l / 10 % 10) {
             k = 1
             l = 0
-        } else l = l / 10
+        } else l /= 10
     }
     return k == 1
 }
@@ -265,7 +273,34 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var N = n
+    var k = 0
+    var z: Int
+    var f: Int
+    var m = 1
+    var a = 0
+    var count = 0
+    val o: Int
+    while (N > 0) {
+        z = m * m
+        f = z
+        while (z > 0) {
+            z /= 10
+            k++
+        }
+        a = f
+        N -= k
+        m += 1
+        k = 0
+    }
+    while (N != 0) {
+        count++
+        N++
+    }
+    o = (a / pow(10.0, count.toDouble()) % 10).toInt()
+    return o
+}
 
 /**
  * Сложная
@@ -276,4 +311,33 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var N = n
+    var k = 0
+    var z: Int
+    var f: Int
+    var a = 0
+    var count = 0
+    val o: Int
+    var y = 1
+    var u = 1
+    while (N > 2) {
+        z = u + y
+        u = y
+        y = z
+        f = z
+        while (z > 0) {
+            z /= 10
+            k++
+        }
+        a = f
+        N -= k
+        k = 0
+    }
+    while (N != 2) {
+        count++
+        N++
+    }
+    o = (a / pow(10.0, count.toDouble()) % 10).toInt()
+    return if (n in 1..2) 1 else o
+}

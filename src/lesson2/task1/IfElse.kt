@@ -151,14 +151,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     n = minOf(a, b, c)
     f = a + b + c - v - n
     r = f * f + n * n - v * v
-    if (v < a + b + c - v) {
-        return when {
-            r < 0 -> return 2
-            r == 0.0 -> return 1
-            r > 0 -> return 0
+    return if (v < a + b + c - v) {
+        when {
+            r < 0 -> 2
+            r == 0.0 -> 1
+            r > 0 -> 0
             else -> -1
         }
-    } else return -1
+    } else -1
 }
 
 
