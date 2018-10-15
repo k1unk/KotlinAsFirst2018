@@ -202,8 +202,7 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double =
-        sin(x)
+fun sin(x: Double, eps: Double): Double = TODO()
 
 /**
  * Средняя
@@ -212,8 +211,7 @@ fun sin(x: Double, eps: Double): Double =
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double =
-        cos(x)
+fun cos(x: Double, eps: Double): Double = TODO()
 
 /**
  * Средняя
@@ -274,32 +272,20 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var N = n
-    var k = 0
-    var z: Int
+    var num = n
+    var s = 0
     var f: Int
-    var m = 1
-    var a = 0
-    var count = 0
-    val o: Int
-    while (N > 0) {
-        z = m * m
-        f = z
-        while (z > 0) {
-            z /= 10
-            k++
-        }
-        a = f
-        N -= k
-        m += 1
-        k = 0
+    var k = 1
+    var g = 0
+    while (num > 0) {
+        f = k * k
+        s = ((s * pow(10.0, digitNumber(f).toDouble()) + f) % pow(10.0, digitNumber(f).toDouble())).toInt()
+        k++
+        g += digitNumber(f)
+        num -= digitNumber(f)
     }
-    while (N != 0) {
-        count++
-        N++
-    }
-    o = (a / pow(10.0, count.toDouble()) % 10).toInt()
-    return o
+    s = (s / pow(10.0, ((g - n).toDouble())) % 10).toInt()
+    return s
 }
 
 /**
@@ -312,32 +298,18 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var N = n
-    var k = 0
-    var z: Int
+    var num = n
+    var s = 0
     var f: Int
-    var a = 0
-    var count = 0
-    val o: Int
-    var y = 1
-    var u = 1
-    while (N > 2) {
-        z = u + y
-        u = y
-        y = z
-        f = z
-        while (z > 0) {
-            z /= 10
-            k++
-        }
-        a = f
-        N -= k
-        k = 0
+    var k = 1
+    var g = 0
+    while (num > 0) {
+        f = fib(k)
+        s = ((s * pow(10.0, digitNumber(f).toDouble()) + f) % pow(10.0, digitNumber(f).toDouble())).toInt()
+        k++
+        g += digitNumber(f)
+        num -= digitNumber(f)
     }
-    while (N != 2) {
-        count++
-        N++
-    }
-    o = (a / pow(10.0, count.toDouble()) % 10).toInt()
-    return if (n in 1..2) 1 else o
+    s = (s / pow(10.0, ((g - n).toDouble())) % 10).toInt()
+    return s
 }
