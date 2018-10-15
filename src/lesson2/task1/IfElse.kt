@@ -3,6 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import java.lang.Math.pow
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -143,15 +144,13 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var v = 0.0
-    var n = 0.0
-    var f = 0.0
-    var r = 0.0
-    v = maxOf(a, b, c)
-    n = minOf(a, b, c)
-    f = a + b + c - v - n
-    r = f * f + n * n - v * v
-    return if (v < a + b + c - v) {
+    val max = maxOf(a, b, c)
+    val min = minOf(a, b, c)
+    val mid: Double
+    val r: Double
+    mid = a + b + c - max - min
+    r = pow(mid, 2.0) + pow(min, 2.0) - pow(max, 2.0)
+    return if (max < mid + min) {
         when {
             r < 0 -> 2
             r == 0.0 -> 1
