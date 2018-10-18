@@ -154,8 +154,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
         when {
             r < 0 -> 2
             r == 0.0 -> 1
-            r > 0 -> 0
-            else -> -1
+            else -> 0
         }
     } else -1
 }
