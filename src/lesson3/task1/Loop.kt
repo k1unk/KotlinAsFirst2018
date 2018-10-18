@@ -7,6 +7,7 @@ import kotlin.math.abs
 import kotlin.math.asin
 import kotlin.math.asinh
 import kotlin.math.sqrt
+
 const val SQR = 2147395600 // SQR - наибольший квадрат, который меньше Int.MAX_VALUE
 
 /**
@@ -262,6 +263,8 @@ fun hasDifferentDigits(n: Int): Boolean {
     return k == 1
 }
 
+
+
 /**
  * Сложная
  *
@@ -271,7 +274,18 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO ()
+fun squareSequenceDigit(n: Int): Int {
+    var counter = 0.0
+    var sqrNum = 1
+    while (true) {
+        val sqrN = sqrNum * sqrNum
+        counter += digitNumber(sqrN)
+        if (n - counter <= 0) {
+            return (sqrN / (pow(10.0, (counter - n))) % 10.0).toInt()
+        }
+        sqrNum++
+    }
+}
 
 /**
  * Сложная
@@ -282,4 +296,15 @@ fun squareSequenceDigit(n: Int): Int = TODO ()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO ()
+fun fibSequenceDigit(n: Int): Int {
+    var counter = 0.0
+    var sqrNum = 1
+    while (true) {
+        val sqrN = fib(sqrNum)
+        counter += digitNumber(sqrN)
+        if (n - counter <= 0) {
+            return (sqrN / (pow(10.0, (counter - n))) % 10.0).toInt()
+        }
+        sqrNum++
+    }
+}
