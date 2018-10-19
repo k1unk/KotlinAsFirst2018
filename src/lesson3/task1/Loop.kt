@@ -264,6 +264,18 @@ fun hasDifferentDigits(n: Int): Boolean {
 }
 
 
+fun getIthDigitFromSeq(n: Int, op: (Int) -> Int): Int {
+    var counter = 0.0
+    var sqrNum = 1
+    while (true) {
+        val sqrN = op(sqrNum)
+        counter += digitNumber(sqrN)
+        if (n - counter <= 0) {
+            return (sqrN / (pow(10.0, (counter - n))) % 10.0).toInt()
+        }
+        sqrNum++
+    }
+}
 
 /**
  * Сложная
@@ -274,18 +286,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var counter = 0.0
-    var sqrNum = 1
-    while (true) {
-        val sqrN = sqrNum * sqrNum
-        counter += digitNumber(sqrN)
-        if (n - counter <= 0) {
-            return (sqrN / (pow(10.0, (counter - n))) % 10.0).toInt()
-        }
-        sqrNum++
-    }
-}
+fun squareSequenceDigit(n: Int): Int = getIthDigitFromSeq(n) { it * it }
 
 /**
  * Сложная
@@ -296,15 +297,4 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var counter = 0.0
-    var sqrNum = 1
-    while (true) {
-        val sqrN = fib(sqrNum)
-        counter += digitNumber(sqrN)
-        if (n - counter <= 0) {
-            return (sqrN / (pow(10.0, (counter - n))) % 10.0).toInt()
-        }
-        sqrNum++
-    }
-}
+fun fibSequenceDigit(n: Int): Int = getIthDigitFromSeq(n) { fib(it) }
