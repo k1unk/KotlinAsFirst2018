@@ -250,12 +250,10 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    var k: Int
     var num = n
     val res = mutableListOf<Int>()
-    while (num > 0) {
-        k = num % base
-        res.add(k)
+    while (num != 0) {
+        res.add(num % base)
         num /= base
     }
     if (n == 0) res.add(0)
@@ -278,7 +276,7 @@ fun convertToString(n: Int, base: Int): String {
     val x2: List<String> = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c",
             "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
             "u", "v", "w", "x", "y", "z")
-    if (n == 0) res.add("0")
+    if (num == 0) res.add("0")
     else {
         while (num > 0) {
             k = num % base
@@ -419,18 +417,18 @@ fun russian(n: Int): String {
         res.add(x3[num / 10000 % 10 - 2])
     }
     if (num / 10000 % 10 == 1) {
-        res.add(x2[num / 10000 % 100 - 2])
+        res.add(x2[num / 1000 % 10])
     }
     if (num / 1000 % 10 in 1..9 && num / 10000 % 10 != 1) {
         res.add(x1_0[num / 1000 % 10 - 1])
     }
-    if (num / 1000 % 10 == 1) {
+    if (num / 1000 % 10 == 1 && num / 10000 % 10 != 1) {
         res.add("тысяча")
     }
-    if (num / 1000 % 10 in 2..4) {
+    if (num / 1000 % 10 in 2..4 && num / 10000 % 10 != 1) {
         res.add("тысячи")
     }
-    if ((num / 1000 > 0) && (num / 1000 % 10 != 1) && (num / 1000 % 10 !in 2..4)) {
+    if ((num / 1000 > 0) && (num / 1000 % 10 != 1) && (num / 1000 % 10 !in 2..4) || num / 10000 % 10 == 1) {
         res.add("тысяч")
     }
     if (num / 100 % 10 in 1..9) {
