@@ -258,6 +258,7 @@ fun convert(n: Int, base: Int): List<Int> {
         res.add(k)
         num /= base
     }
+    if (n == 0) res.add(0)
     return res.reversed()
 }
 
@@ -277,10 +278,13 @@ fun convertToString(n: Int, base: Int): String {
     val x2: List<String> = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c",
             "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
             "u", "v", "w", "x", "y", "z")
-    while (num > 0) {
-        k = num % base
-        res.add(x2[k])
-        num /= base
+    if (n == 0) res.add("0")
+    else {
+        while (num > 0) {
+            k = num % base
+            res.add(x2[k])
+            num /= base
+        }
     }
     res = res.reversed().toMutableList()
     return res.joinToString(separator = "")
@@ -423,10 +427,10 @@ fun russian(n: Int): String {
     if (num / 1000 % 10 == 1) {
         res.add("тысяча")
     }
-    if (num / 1000 % 10 == 2) {
+    if (num / 1000 % 10 in 2..4) {
         res.add("тысячи")
     }
-    if ((num / 1000 > 0) && (num / 1000 % 10 != 1) && (num / 1000 % 10 != 2)) {
+    if ((num / 1000 > 0) && (num / 1000 % 10 != 1) && (num / 1000 % 10 !in 2..4)) {
         res.add("тысяч")
     }
     if (num / 100 % 10 in 1..9) {
