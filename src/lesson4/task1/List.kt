@@ -3,7 +3,6 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import lesson3.task1.digitNumber
 import java.lang.Math.*
 import kotlin.math.sqrt
 
@@ -117,26 +116,23 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
+fun abs(v: List<Double>): Double  {
     var n = 0.0
     for (element in v) {
         n += element * element
     }
-    return if (v.isEmpty()) 0.0 else sqrt(n)
+    return sqrt(n)
 }
-
 
 /**
  * Простая
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    return if (list.isNotEmpty()) {
+fun mean(list: List<Double>): Double =
+        if (list.isNotEmpty()) {
         list.sum() / list.size
     } else 0.0
-}
-
 
 /**
  * Средняя
@@ -273,7 +269,7 @@ fun convertToString(n: Int, base: Int): String {
     var k: Int
     var num = n
     var res = mutableListOf<String>()
-    val x2: List<String> = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c",
+    val x2 = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c",
             "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
             "u", "v", "w", "x", "y", "z")
     if (num == 0) res.add("0")
@@ -315,47 +311,23 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
+/**
+ * Сложная
+ *
+ * Перевести число, представленное цифровой строкой str,
+ * из системы счисления с основанием base в десятичную.
+ * Цифры более 9 представляются латинскими строчными буквами:
+ * 10 -> a, 11 -> b, 12 -> c и так далее.
+ * Например: str = "13c", base = 14 -> 250
+ */
 fun decimalFromString(str: String, base: Int): Int {
     val res = mutableListOf<Int>()
     var c = 0
     for (i in str) {
         when (i) {
-            '0' -> res.add(0)
-            '1' -> res.add(1)
-            '2' -> res.add(2)
-            '3' -> res.add(3)
-            '4' -> res.add(4)
-            '5' -> res.add(5)
-            '6' -> res.add(6)
-            '7' -> res.add(7)
-            '8' -> res.add(8)
-            '9' -> res.add(9)
-            'a' -> res.add(10)
-            'b' -> res.add(11)
-            'c' -> res.add(12)
-            'd' -> res.add(13)
-            'e' -> res.add(14)
-            'f' -> res.add(15)
-            'g' -> res.add(16)
-            'h' -> res.add(17)
-            'i' -> res.add(18)
-            'j' -> res.add(19)
-            'k' -> res.add(20)
-            'l' -> res.add(21)
-            'm' -> res.add(22)
-            'n' -> res.add(23)
-            'o' -> res.add(24)
-            'p' -> res.add(25)
-            'q' -> res.add(26)
-            'r' -> res.add(27)
-            's' -> res.add(28)
-            't' -> res.add(29)
-            'u' -> res.add(30)
-            'v' -> res.add(31)
-            'w' -> res.add(32)
-            'x' -> res.add(33)
-            'y' -> res.add(34)
-            'z' -> res.add(35)
+            '0','1','2','3','4','5','6','7','8','9' -> res.add((i-48).toInt())
+            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t',
+            'u','v','w','x','y','z' -> res.add((i-87).toInt())
         }
     }
     for (i in 0 until res.size) {
@@ -398,50 +370,49 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    val num = n
     var res = mutableListOf<String>()
-    val x1: List<String> = listOf("один", "два", "три", "четыре", "пять", "шесть",
+    val x1 = listOf("один", "два", "три", "четыре", "пять", "шесть",
             "семь", "восемь", "девять")
-    val x1_0: List<String> = listOf("одна", "две", "три", "четыре", "пять", "шесть",
+    val x1_0 = listOf("одна", "две", "три", "четыре", "пять", "шесть",
             "семь", "восемь", "девять")
-    val x2: List<String> = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+    val x2 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
             "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
-    val x3: List<String> = listOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят",
+    val x3 = listOf("двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят",
             "семьдесят", "восемьдесят", "девяносто")
-    val x4: List<String> = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот",
+    val x4 = listOf("", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот",
             "семьсот", "восемьсот", "девятьсот")
-    if (num / 100000 % 10 in 1..9) {
-        res.add(x4[num / 100000 % 10])
+    if (n / 100000 % 10 in 1..9) {
+        res.add(x4[n / 100000 % 10])
     }
-    if (num / 10000 % 10 in 2..9) {
-        res.add(x3[num / 10000 % 10 - 2])
+    if (n / 10000 % 10 in 2..9) {
+        res.add(x3[n / 10000 % 10 - 2])
     }
-    if (num / 10000 % 10 == 1) {
-        res.add(x2[num / 1000 % 10])
+    if (n / 10000 % 10 == 1) {
+        res.add(x2[n / 1000 % 10])
     }
-    if (num / 1000 % 10 in 1..9 && num / 10000 % 10 != 1) {
-        res.add(x1_0[num / 1000 % 10 - 1])
+    if (n / 1000 % 10 in 1..9 && n / 10000 % 10 != 1) {
+        res.add(x1_0[n / 1000 % 10 - 1])
     }
-    if (num / 1000 % 10 == 1 && num / 10000 % 10 != 1) {
+    if (n / 1000 % 10 == 1 && n / 10000 % 10 != 1) {
         res.add("тысяча")
     }
-    if (num / 1000 % 10 in 2..4 && num / 10000 % 10 != 1) {
+    if (n / 1000 % 10 in 2..4 && n / 10000 % 10 != 1) {
         res.add("тысячи")
     }
-    if ((num / 1000 > 0) && (num / 1000 % 10 != 1) && (num / 1000 % 10 !in 2..4) || num / 10000 % 10 == 1) {
+    if ((n / 1000 > 0) && (n / 1000 % 10 != 1) && (n / 1000 % 10 !in 2..4) || n / 10000 % 10 == 1) {
         res.add("тысяч")
     }
-    if (num / 100 % 10 in 1..9) {
-        res.add(x4[num / 100 % 10])
+    if (n / 100 % 10 in 1..9) {
+        res.add(x4[n / 100 % 10])
     }
-    if (num / 10 % 10 in 2..9) {
-        res.add(x3[num / 10 % 10 - 2])
+    if (n / 10 % 10 in 2..9) {
+        res.add(x3[n / 10 % 10 - 2])
     }
-    if (num / 10 % 10 == 1) {
-        res.add(x2[num % 100 - 10])
+    if (n / 10 % 10 == 1) {
+        res.add(x2[n % 100 - 10])
     }
-    if (num / 1 % 10 in 1..9 && num / 10 % 10 != 1) {
-        res.add(x1[num / 1 % 10 - 1])
+    if (n / 1 % 10 in 1..9 && n / 10 % 10 != 1) {
+        res.add(x1[n / 1 % 10 - 1])
     }
     res = res.toMutableList()
     return res.joinToString(separator = " ")
