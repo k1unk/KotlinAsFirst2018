@@ -116,7 +116,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double  {
+fun abs(v: List<Double>): Double {
     var n = 0.0
     for (element in v) {
         n += element * element
@@ -129,10 +129,7 @@ fun abs(v: List<Double>): Double  {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double =
-        if (list.isNotEmpty()) {
-        list.sum() / list.size
-    } else 0.0
+fun mean(list: List<Double>): Double = if (list.isNotEmpty()) { list.sum() / list.size } else 0.0
 
 /**
  * Средняя
@@ -266,22 +263,21 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    var k: Int
     var num = n
-    var res = mutableListOf<String>()
+    val res = mutableListOf<String>()
     val x2 = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c",
             "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
             "u", "v", "w", "x", "y", "z")
     if (num == 0) res.add("0")
     else {
         while (num > 0) {
+            var k: Int
             k = num % base
             res.add(x2[k])
             num /= base
         }
     }
-    res = res.reversed().toMutableList()
-    return res.joinToString(separator = "")
+    return res.reversed().joinToString(separator = "")
 }
 
 
@@ -325,9 +321,8 @@ fun decimalFromString(str: String, base: Int): Int {
     var c = 0
     for (i in str) {
         when (i) {
-            '0','1','2','3','4','5','6','7','8','9' -> res.add((i-48).toInt())
-            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t',
-            'u','v','w','x','y','z' -> res.add((i-87).toInt())
+            in '0'..'9' -> res.add((i-48).toInt())
+            in 'a'..'z' -> res.add((i - 87).toInt())
         }
     }
     for (i in 0 until res.size) {
@@ -346,9 +341,9 @@ fun decimalFromString(str: String, base: Int): Int {
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 fun roman(n: Int): String {
-    var res = mutableListOf<String>()
+    val res = mutableListOf<String>()
     var num = n
-    val x: List<String> = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val x = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     val y: List<Int> = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
     for (i in 0 until y.size) {
         if (num - y[i] >= 0) {
@@ -358,7 +353,6 @@ fun roman(n: Int): String {
             }
         }
     }
-    res = res.toMutableList()
     return res.joinToString(separator = "")
 }
 
@@ -370,7 +364,7 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var res = mutableListOf<String>()
+    val res = mutableListOf<String>()
     val x1 = listOf("один", "два", "три", "четыре", "пять", "шесть",
             "семь", "восемь", "девять")
     val x1_0 = listOf("одна", "две", "три", "четыре", "пять", "шесть",
@@ -414,6 +408,5 @@ fun russian(n: Int): String {
     if (n / 1 % 10 in 1..9 && n / 10 % 10 != 1) {
         res.add(x1[n / 1 % 10 - 1])
     }
-    res = res.toMutableList()
     return res.joinToString(separator = " ")
 }
