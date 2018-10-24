@@ -271,8 +271,7 @@ fun convertToString(n: Int, base: Int): String {
     if (num == 0) res.add("0")
     else {
         while (num > 0) {
-            var k: Int
-            k = num % base
+            val k = num % base
             res.add(x2[k])
             num /= base
         }
@@ -321,7 +320,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var c = 0
     for (i in str) {
         when (i) {
-            in '0'..'9' -> res.add((i-48).toInt())
+            in '0'..'9' -> res.add((i - 48).toInt())
             in 'a'..'z' -> res.add((i - 87).toInt())
         }
     }
