@@ -77,6 +77,7 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
     return res
 }
 
+
 /**
  * Средняя
  *
@@ -94,7 +95,19 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     mapOf("Emergency" to "911", "Police" to "02")
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
+fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
+    val res = mutableMapOf<String, String>()
+    for ((name, num) in mapA)
+        res[name] = num
+    for ((name, num) in mapB) {
+        if (name in res) {
+            if (num != res[name])
+                res[name] = mapA[name] + ", $num"
+        }
+        else res[name] = num
+    }
+    return res
+}
 
 /**
  * Простая
@@ -106,7 +119,16 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    val res = mutableMapOf<Int, List<String>>()
+    for ((name, num) in grades) {
+        if (num !in res)
+            res[num] = listOf(name)
+        else
+            res[num] = res[num]!!.plus(listOf(name)).sortedDescending()
+    }
+    return res
+}
 
 /**
  * Простая
@@ -118,7 +140,23 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    val res1 = mutableListOf<String>()
+    val res2 = mutableListOf<String>()
+    for ((b1, b2) in b) {
+        if (b1 !in res1)
+            res1 += b1
+        if (b2 !in res2)
+            res2 += b2
+    }
+    for ((a1, a2) in a) {
+        if (a1 !in res1)
+            return false
+        if (a2 !in res2)
+            return false
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -130,7 +168,26 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val res = mutableMapOf<String, Double>()
+    var count = 0
+    var cost = 0.0
+    for ((a, b) in stockPrices) {
+        if (a !in res) {
+            count = 0
+            cost = 0.0
+            count++
+            res[a] = b
+            cost += b
+        }
+        else {
+            count++
+            res[a] = (cost + b) / count
+            cost += res[a]!!
+        }
+    }
+    return res
+}
 
 /**
  * Средняя
@@ -147,7 +204,19 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    var res: String? = null
+    var min = Int.MAX_VALUE
+    for ((name, pair) in stuff) {
+        if (pair.first == kind) {
+            if (pair.second < min) {
+                min = pair.second.toInt()
+                res = name
+            }
+        }
+    }
+    return res
+}
 
 /**
  * Сложная
@@ -189,14 +258,26 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TODO()
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
+    for ((n1, n2) in b) {
+        if (a[n1] == n2)
+            a.remove(n1)
+    }
+}
 
 /**
  * Простая
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val res = mutableListOf<String>()
+    a.forEach {
+        if (it in b)
+            res.add(it)
+    }
+    return res
+}
 
 /**
  * Средняя
@@ -207,7 +288,14 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    var k = 0
+    for (i in word) {
+        if (i !in chars)
+            k++
+    }
+    return k == 0
+}
 
 /**
  * Средняя
@@ -251,7 +339,14 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in 0..list.size) {
+        for (s in i+1..list.size)
+            if (i + s == number)
+                return Pair(i, s - 1)
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная
@@ -272,4 +367,11 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+       val res = mutableSetOf<String>()
+        for ((name, pair) in treasures) {
+            if (pair.first <= capacity)
+                res.add(name)
+    }
+    return res
+}

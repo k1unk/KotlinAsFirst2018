@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 /**
  * Пример
  *
@@ -83,7 +85,72 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val res = mutableSetOf<String>()
+    val resDays = mutableSetOf<String>()
+    val resMonths = mutableSetOf<String>()
+    val resYears = mutableSetOf<String>()
+    val mon = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября",
+            "октября", "ноября", "декабря")
+    val parts = digital.split(" ")
+
+    for (part in 0..parts.size - 3) {resDays.add(parts[part]) }
+    val day = resDays.last()
+
+    for (part in 1..parts.size - 2) {
+        when (parts[part]) {
+            "01" -> resMonths.add("1")
+            "02" -> resMonths.add("2")
+            "03" -> resMonths.add("3")
+            "04" -> resMonths.add("4")
+            "05" -> resMonths.add("5")
+            "06" -> resMonths.add("6")
+            "07" -> resMonths.add("7")
+            "08" -> resMonths.add("8")
+            "09" -> resMonths.add("9")
+            "10" -> resMonths.add("10")
+            "11" -> resMonths.add("11")
+            "12" -> resMonths.add("12")
+        }
+    }
+    val month = resMonths.last()
+
+    for (part in 2..parts.size - 1) {resYears.add(parts[part])}
+    val year = resYears.last()
+
+    println(day)
+    println(month)
+    println(year)
+    println (resDays)
+
+    var k = 0
+    if (day.toInt() in 1..daysInMonth(month.toInt(), year.toInt())) k = 1
+
+    if (k==1) {
+        res += day
+
+        resMonths.forEach {
+            when (it) {
+                "1" -> res += "января"
+                "2" -> res += "февраля"
+                "3" -> res += "марта"
+                "4" -> res += "апреля"
+                "5" -> res += "мая"
+                "6" -> res += "июня"
+                "7" -> res += "июля"
+                "8" -> res += "августа"
+                "9" -> res += "сентября"
+                "10" -> res += "октября"
+                "11" -> res += "ноября"
+                "12" -> res += "декабря"
+                else -> return "s"
+            }
+        }
+        res += year
+    }
+     if (parts.size == 3) return res.joinToString(separator = " ")
+    return "s"
+}
 
 /**
  * Средняя
