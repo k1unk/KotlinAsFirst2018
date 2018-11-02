@@ -290,8 +290,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     var k = 0
-    for (i in word) {
-        if (i !in chars)
+    word.forEach {
+        if (it !in chars)
             k++
     }
     return k == 0
