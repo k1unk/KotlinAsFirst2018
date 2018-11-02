@@ -272,9 +272,9 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     val res = mutableListOf<String>()
-    a.forEach {
-        if (it in b)
-            res.add(it)
+    for (i in a) {
+        if (i in b)
+            res.add(i)
     }
     return res
 }
@@ -362,10 +362,10 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in 0..list.size) {
-        for (s in i+1..list.size)
-            if (i + s == number)
-                return Pair(i, s - 1)
+    for (i in 0 until list.size) {
+        for (s in i+1 until list.size)
+            if (list[i] + list[s] == number)
+                return Pair(i, s)
     }
     return Pair(-1, -1)
 }
