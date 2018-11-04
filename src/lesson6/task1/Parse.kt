@@ -209,7 +209,7 @@ fun bestLongJump(jumps: String): Int {
 
         res.removeAt(0)
 
-        if (res.size == 0) return -1
+        if (res.size == 0) throw Exception()
 
         res.forEach {
             if (it.toInt() > max)
@@ -217,7 +217,7 @@ fun bestLongJump(jumps: String): Int {
         }
         max
     }
-    catch (e: Exception) { 2147483647 }
+    catch (e: Exception) { -1 }
 }
 
 /**
@@ -316,7 +316,7 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     var k = 0
     val parts = str.split(" ")
-    if (parts.size == 1)
+   return  try {if (parts.size == 1)
         return -1
     else {
         for (i in 0 until parts.size) {
@@ -325,7 +325,8 @@ fun firstDuplicateIndex(str: String): Int {
             k += parts[i].length + 1
         }
     }
-    return -1
+    -1}
+    catch(e: Exception) { -1 }
 }
 
 /**
