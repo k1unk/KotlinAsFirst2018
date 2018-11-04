@@ -209,7 +209,7 @@ fun bestLongJump(jumps: String): Int {
 
         res.removeAt(0)
 
-        if (res.size == 0) throw Exception()
+        if (res.size == 0) return -1
 
         res.forEach {
             if (it.toInt() > max)
@@ -217,7 +217,7 @@ fun bestLongJump(jumps: String): Int {
         }
         max
     }
-    catch (e: Exception) { -1 }
+    catch (e: Exception) { 2147483647 }
 }
 
 /**
