@@ -387,7 +387,7 @@ fun fromRoman(roman: String): Int {
     var roma = ""
     val parts = roman.split("")
     if (roman == "") return -1
-    if (!Regex("""M+(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
+    if (!Regex("""M{0,99999999}(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
 
     for (i in 0 until parts.size) {
         roma += parts[i]
