@@ -199,6 +199,7 @@ fun flattenPhoneNumber(phone: String): String {
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf("")
     var max = 0
+    var intMaxValue = 2147483647
     val parts = jumps.split(" ")
     return try {
         parts.forEach {
@@ -214,6 +215,8 @@ fun bestLongJump(jumps: String): Int {
         res.forEach {
             if (it.toInt() > max)
                 max = it.toInt()
+            if (it.toInt() == intMaxValue)
+                max = intMaxValue
         }
         max
     }
