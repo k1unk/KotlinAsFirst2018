@@ -199,13 +199,13 @@ fun flattenPhoneNumber(phone: String): String {
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf("")
     var max = 0
-    var intMaxValue = 2147483647
     val parts = jumps.split(" ")
     return try {
         parts.forEach {
             if (    it != "-" &&
                     it != "%" &&
-                    it != " ") { res.add(it) }
+                    it != " " &&
+                    it != "") { res.add(it) }
         }
 
         res.removeAt(0)
@@ -215,9 +215,8 @@ fun bestLongJump(jumps: String): Int {
         res.forEach {
             if (it.toInt() > max)
                 max = it.toInt()
-            if (it.toInt() == intMaxValue)
-                max = intMaxValue
         }
+
         max
     }
     catch (e: Exception) { -1 }
@@ -276,7 +275,16 @@ fun plusMinus(expression: String): Int {
     val number = mutableListOf("")
     var count = 0
     val num = setOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+    val all = setOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-")
     val parts = expression.split(" ")
+
+    for (i in 0 until parts.size) {
+        for (o in parts[i]) {
+            if (o.toString() !in all )
+                count++
+        }
+    }
+
     if (parts.size % 2 == 0) { count++ }
     else {
         for (part in 0..parts.size step (2)) {
@@ -304,6 +312,7 @@ fun plusMinus(expression: String): Int {
 
         for (i in 0..list.size - list.size) { res += list[i].toInt() }
     }
+
     return if (count == 0) res else throw java.lang.IllegalArgumentException()
 }
 
@@ -319,17 +328,20 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     var k = 0
     val parts = str.split(" ")
-   return  try {if (parts.size == 1)
-        return -1
-    else {
-        for (i in 0 until parts.size) {
-            if (parts[i].toLowerCase() == parts[i + 1].toLowerCase())
-                return k
-            k += parts[i].length + 1
+    return try {
+        if (parts.size == 1)
+            return -1
+        else {
+            for (i in 0 until parts.size) {
+                if (parts[i].toLowerCase() == parts[i + 1].toLowerCase())
+                    return k
+                k += parts[i].length + 1
+            }
         }
+
+        -1
     }
-    -1}
-    catch(e: Exception) { -1 }
+    catch (e: Exception) { -1 }
 }
 
 /**
@@ -349,6 +361,8 @@ fun mostExpensive(description: String): String {
     var res = ""
     var count = 0
     var max = 0.0
+    var k = 0
+    var resMany: String
     val partsDescription = description.split(" ")
 
     if (partsDescription.size % 2 == 1)
@@ -366,9 +380,17 @@ fun mostExpensive(description: String): String {
         }
 
         for (i in 0 until partsRes.size) {
-            if (partsRes[i] == max.toString())
-                res = partsRes[i - 1]
+            if (partsRes[i] == max.toString()) {
+                if (k == 0) {
+                    res = partsRes[i - 1]
+                    k++
+                } else {
+                    resMany = partsRes[i]
+                    res = "Any good with price $resMany"
+                }
+            }
         }
+
     }
 
     return if (count == 0) res else ""
@@ -488,7 +510,8 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {  //ВСЁ НЕПРАВИЛЬНО
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+/*
     val res = mutableListOf<Int>()
     val list = mutableListOf("")
     val list2 = mutableListOf("")
@@ -545,3 +568,4 @@ for (i in 0 until list2.size) {
 
     return resCells
 }
+*/

@@ -271,12 +271,12 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val res = mutableListOf<String>()
+    val res = mutableSetOf<String>()
     for (i in a) {
         if (i in b)
             res.add(i)
     }
-    return res
+    return res.toList()
 }
 
 /**
