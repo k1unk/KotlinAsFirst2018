@@ -339,7 +339,7 @@ fun hasAnagrams(words: List<String>): Boolean {
     println(list)
     for (i in 0 until list.size) {
         for (s in i+1 until list.size)
-            if (list[s]==list[i]) return true
+            if (list[s] == list[i]) return true
         }
     return false
 }
@@ -389,7 +389,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+/*{
        val res = mutableSetOf<String>()
         for ((name, pair) in treasures) {
             if (pair.first <= capacity)
@@ -397,3 +398,4 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     }
     return res
 }
+*/

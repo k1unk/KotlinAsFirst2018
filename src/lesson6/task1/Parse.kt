@@ -169,16 +169,17 @@ fun flattenPhoneNumber(phone: String): String {
         if (plus == 1) res2.add("+")
 
         res1.forEach {
-            if (    it == "0" ||
-                    it == "1" ||
-                    it == "2" ||
-                    it == "3" ||
-                    it == "4" ||
-                    it == "5" ||
-                    it == "6" ||
-                    it == "7" ||
-                    it == "8" ||
-                    it == "9"   ) { res2.add(it) }
+            if (it == "0" ||
+                it == "1" ||
+                it == "2" ||
+                it == "3" ||
+                it == "4" ||
+                it == "5" ||
+                it == "6" ||
+                it == "7" ||
+                it == "8" ||
+                it == "9"  )
+            { res2.add(it) }
         }
 
         res2.joinToString(separator = "")
@@ -202,10 +203,11 @@ fun bestLongJump(jumps: String): Int {
     val parts = jumps.split(" ")
     return try {
         parts.forEach {
-            if (    it != "-" &&
-                    it != "%" &&
-                    it != " " &&
-                    it != "") { res.add(it) }
+            if (it != "-" &&
+                it != "%" &&
+                it != " " &&
+                it != "")
+            { res.add(it) }
         }
 
         res.removeAt(0)
@@ -423,7 +425,7 @@ fun fromRoman(roman: String): Int {
             res += 1000
         }
 
-        if (parts[i] == "C" && parts[i + 1] == "M") {
+        if (parts[i] == "C" && parts[i+1] == "M") {
             res += 900
         }
 
@@ -431,15 +433,15 @@ fun fromRoman(roman: String): Int {
             res += 500
         }
 
-        if (parts[i] == "C" && parts[i + 1] == "D") {
+        if (parts[i] == "C" && parts[i+1] == "D") {
             res += 400
         }
 
-        if (parts[i] == "C" && parts[i + 1] != "D" && parts[i + 1] != "M" && parts[i-1] != "X") {
+        if (parts[i] == "C" && parts[i+1] != "D" && parts[i+1] != "M" && parts[i-1] != "X") {
             res += 100
         }
 
-        if (parts[i] == "X" && parts[i + 1] == "C") {
+        if (parts[i] == "X" && parts[i+1] == "C") {
             res += 90
         }
 
@@ -447,7 +449,7 @@ fun fromRoman(roman: String): Int {
             res += 50
         }
 
-        if (parts[i] == "X" && parts[i + 1] == "L") {
+        if (parts[i] == "X" && parts[i+1] == "L") {
             res += 40
         }
 
@@ -455,7 +457,7 @@ fun fromRoman(roman: String): Int {
             res += 10
         }
 
-        if (parts[i] == "I" && parts[i + 1] == "X") {
+        if (parts[i] == "I" && parts[i+1] == "X") {
             res += 9
         }
 
@@ -463,11 +465,11 @@ fun fromRoman(roman: String): Int {
             res += 5
         }
 
-        if (parts[i] == "I" && parts[i + 1] == "V") {
+        if (parts[i] == "I" && parts[i+1] == "V") {
             res += 4
         }
 
-        if (parts[i] == "I" && parts[i + 1] != "V" && parts[i + 1] != "X") {
+        if (parts[i] == "I" && parts[i+1] != "V" && parts[i+1] != "X") {
             res += 1
         }
     }
@@ -518,7 +520,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TO
     var str = ""
     val resCells = mutableListOf<Int>()
     var start = 0
-var s1=0
+    var s1=0
     var k=0
     var s2=0
 
@@ -549,7 +551,7 @@ var s1=0
     if (cells%2==0) start=cells/2 else start=(cells+1)/2
     // cтарт точка от которой начинается счетчик
     while (s1==0) {
-for (i in 0 until list2.size) {
+    for (i in 0 until list2.size) {
 
     if (list2[i] == "+" && s1 == 0) resCells[start]++; k++
     if (list2[i] == "-" && s1 == 0) resCells[start]--; k++
