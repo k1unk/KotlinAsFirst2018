@@ -79,11 +79,12 @@ fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
 
     return try {
+        if (parts.size != 3) throw Exception()
+
         val days = parts[0].toInt()
         val months = mon.indexOf(parts[1]) + 1
         val years = parts[2].toInt()
 
-        if (parts.size != 3) throw Exception()
         if (days !in 1..daysInMonth(months, years)) throw Exception()
         if (months !in 1..12) throw Exception()
 
@@ -108,6 +109,8 @@ fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
 
     return try {
+        if (parts.size != 3) throw Exception()
+
         val days = parts[0].toInt()
         val monthsInt = parts[1].toInt()
         val years = parts[2].toInt()
@@ -115,7 +118,6 @@ fun dateDigitToStr(digital: String): String {
 
         if (monthsInt in 1..12) monthsStr = mon[monthsInt - 1]
 
-        if (parts.size != 3) throw Exception()
         if (days !in 1..daysInMonth(monthsInt, years)) throw Exception()
         if (monthsInt !in 1..12) throw Exception()
         String.format("%d %s %d", days, monthsStr, years)
@@ -136,19 +138,8 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String {
-    val res = mutableListOf("")
-
     if (!Regex("""\+?[- 0-9]*(\([- 0-9]*\))?[- 0-9]*""").matches(phone)) return ""
-
-    if (Regex("""\+[- 0-9]*(\([- 0-9]*\))?[- 0-9]*""").matches(phone)) res.add("+")
-    phone.forEach {
-        if (it == '0' || it == '1' || it == '2' || it == '3' || it == '4' ||
-                it == '5' || it == '6' || it == '7' || it == '8' || it == '9') {
-            res.add(it.toString())
-        }
-    }
-
-    return res.joinToString(separator = "")
+    return Regex("""[- ()]""").replace(phone, "")
 }
 
 /**
@@ -162,23 +153,19 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val res = mutableListOf("")
+    val res = mutableListOf<String>()
     val parts = jumps.split(" ")
 
     return try {
         for (i in parts) {
-            if (    i != "-" &&
-                    i != "%" &&
-                    i != " " &&
-                    i != "") {
+            if (i != "-" && i != "%" && i != " " && i != "") {
                 res.add(i)
             }
         }
-        res.removeAt(0)
 
-        if (res.size == 0) throw Exception()
+        if (res.isEmpty()) throw Exception()
 
-        res.maxBy{it.toInt()}!!.toInt()
+        res.maxBy{ it.toInt() }!!.toInt()
     }
     catch (e: Exception) { -1 }
 }
@@ -194,7 +181,7 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val list = mutableListOf("")
+    val list = mutableListOf<String>()
     val parts = jumps.split(" ")
     return try {
         for (part in 1..parts.size step 2) {
@@ -204,11 +191,10 @@ fun bestHighJump(jumps: String): Int {
                 }
             }
         }
-        list.removeAt(0)
 
         if (list.size == 0) throw Exception()
 
-        list.maxBy{it.toInt()}!!.toInt()
+        list.maxBy{ it.toInt() }!!.toInt()
     }
     catch (e: Exception) { -1 }
 }
@@ -279,17 +265,15 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     var k = 0
     val parts = str.toLowerCase().split(" ")
-
     if (parts.size == 1)
         return -1
-    else {
-        for (i in 0 until parts.size) {
-            if (parts[i] == parts[i + 1])
-                return k
-            k += parts[i].length + 1
-        }
+    for (i in 0 until parts.size) {
+        if (i+2 == parts.size)
+            return -1
+        if (parts[i] == parts[i + 1])
+            return k
+        k += parts[i].length + 1
     }
-
     return -1
 }
 
@@ -337,8 +321,9 @@ fun fromRoman(roman: String): Int {
     var res = 0
     var num: Int
     var numPrev = Int.MAX_VALUE
-    val rim = listOf("", "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I","","","","","","")
-    val rus: List<Int> = listOf(0, 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+    val rim = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val rus = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+
     if (roman == "") return -1
     if (!Regex("""M*(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
 
@@ -395,39 +380,3 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
-/*
-    val list = commands.toMutableList()
-    val set = setOf('>', '<', '+', '-', '[', ']', ' ')
-    val res = mutableListOf<Int>()
-    var start = cells / 2
-    var end = 0
-
-    commands.forEach { if (it !in set) throw Exception() }
-    for (i in 0 until cells) res.add(0)
-
-    for (i in 0 until list.size) {
-        if (end != limit) {
-            if (list[i] == ' ') {
-                end++
-            }
-            if (list[i] == '+') {
-                end++
-                res[start]++
-            }
-            if (list[i] == '-') {
-                end++
-                res[start]--
-            }
-            if (list[i] == '>') {
-                end++
-                start++
-            }
-            if (list[i] == '<') {
-                end++
-                start--
-            }
-        }
-    }
-    return res
-}
-*/

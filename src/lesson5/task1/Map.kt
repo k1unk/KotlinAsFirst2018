@@ -117,16 +117,12 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val list = mutableListOf<String>()
     val res = mutableMapOf<Int, MutableList<String>>()
     for ((name, num) in grades) {
-        if (num !in res)
-            res[num] = list.plus(name).toMutableList()
-        else
-            res[num] = res[num]!!.plus(list.plus(name)).toMutableList()
+        res.getOrPut(num, ::mutableListOf).add(name)
     }
-    for ((_, num) in grades) {
-        res[num]?.sortDescending()
+    for ((_, num) in res) {
+        num.sortDescending()
     }
     return res
 }
@@ -141,7 +137,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a + b == b + a
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = b + a == b
 
 /**
  * Средняя
@@ -154,21 +150,13 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a + b 
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val mapSorted = mutableMapOf<String, MutableList<Double>>()
     val res = mutableMapOf<String, Double>()
-    var count = 0
-    var cost = 0.0
-    for ((a, b) in stockPrices) {
-        if (a !in res) {
-            count = 0
-            cost = 0.0
-            count++
-            res[a] = b
-            cost += b
-        } else {
-            count++
-            res[a] = (cost * (count - 1) + b) / count
-            cost += res[a]!!
-        }
+    for ((name, num) in stockPrices) {
+        mapSorted.getOrPut(name, ::mutableListOf).add(num)
+    }
+    for ((name, num) in mapSorted) {
+        res[name] = num.sum() / num.size
     }
     return res
 }
@@ -350,15 +338,4 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val res = mutableSetOf<String>()
-    var count = 0
-    for ((name, pair) in treasures) {
-        if (pair.first <= capacity)
-            if (pair.second > count) {
-                res.add(name)
-                count = pair.second
-            }
-    }
-    return res
-}
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
