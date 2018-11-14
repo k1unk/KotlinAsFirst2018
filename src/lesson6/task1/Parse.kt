@@ -77,24 +77,17 @@ fun dateStrToDigit(str: String): String {
     val mon = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
             "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val parts = str.split(" ")
-    var days = 0
-    var monthsStr = ""
-    var monthsInt = 0
-    var years = 0
 
     return try {
+        val days = parts[0].toInt()
+        val months = mon.indexOf(parts[1]) + 1
+        val years = parts[2].toInt()
+
         if (parts.size != 3) throw Exception()
+        if (days !in 1..daysInMonth(months, years)) throw Exception()
+        if (months !in 1..12) throw Exception()
 
-        for (i in 0..parts.size - 3) days = parts[i].toInt()
-        for (i in 1..parts.size - 2) monthsStr = parts[i]
-        for (i in 2..parts.size - 1) years = parts[i].toInt()
-
-        if (monthsStr in mon) monthsInt = mon.indexOf(monthsStr) + 1
-
-        if (days !in 1..daysInMonth(monthsInt, years)) throw Exception()
-        if (monthsInt !in 1..12) throw Exception()
-
-        String.format("%02d.%02d.%d", days, monthsInt, years)
+        String.format("%02d.%02d.%d", days, months, years)
     }
     catch (e: Exception) { "" }
 }
@@ -113,20 +106,16 @@ fun dateDigitToStr(digital: String): String {
     val mon = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
             "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val parts = digital.split(".")
-    var days = 0
-    var monthsStr = ""
-    var monthsInt = 0
-    var years = 0
 
     return try {
-        if (parts.size != 3) throw Exception()
-
-        for (i in 0..parts.size - 3) days = parts[i].toInt()
-        for (i in 1..parts.size - 2) monthsInt = parts[i].toInt()
-        for (i in 2..parts.size - 1) years = parts[i].toInt()
+        val days = parts[0].toInt()
+        val monthsInt = parts[1].toInt()
+        val years = parts[2].toInt()
+        var monthsStr = ""
 
         if (monthsInt in 1..12) monthsStr = mon[monthsInt - 1]
 
+        if (parts.size != 3) throw Exception()
         if (days !in 1..daysInMonth(monthsInt, years)) throw Exception()
         if (monthsInt !in 1..12) throw Exception()
         String.format("%d %s %d", days, monthsStr, years)
@@ -147,44 +136,19 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String {
-    val res1 = mutableListOf<String>()
-    val res2 = mutableListOf("")
-    val set = setOf('+', '(', ')', '-', ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0')
-    var plus = 0
-    var skobka1 = 0
-    var skobka2 = 0
-    return try {
-        phone.forEach {
-            res1.add(it.toString())
-            if (it !in set) throw Exception()
-            if (it == '+') plus++
-            if (it == '(') skobka1++
-            if (it == ')') skobka2++
+    val res = mutableListOf("")
+
+    if (!Regex("""\+?[- 0-9]*(\([- 0-9]*\))?[- 0-9]*""").matches(phone)) return ""
+
+    if (Regex("""\+[- 0-9]*(\([- 0-9]*\))?[- 0-9]*""").matches(phone)) res.add("+")
+    phone.forEach {
+        if (it == '0' || it == '1' || it == '2' || it == '3' || it == '4' ||
+                it == '5' || it == '6' || it == '7' || it == '8' || it == '9') {
+            res.add(it.toString())
         }
-
-        if (plus > 1) throw Exception()
-        if (skobka1 > 1) throw Exception()
-        if (skobka2 > 1) throw Exception()
-
-        if (plus == 1) res2.add("+")
-
-        res1.forEach {
-            if (it == "0" ||
-                it == "1" ||
-                it == "2" ||
-                it == "3" ||
-                it == "4" ||
-                it == "5" ||
-                it == "6" ||
-                it == "7" ||
-                it == "8" ||
-                it == "9"  )
-            { res2.add(it) }
-        }
-
-        res2.joinToString(separator = "")
     }
-    catch (e: Exception) { "" }
+
+    return res.joinToString(separator = "")
 }
 
 /**
@@ -199,27 +163,22 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf("")
-    var max = 0
     val parts = jumps.split(" ")
-    return try {
-        parts.forEach {
-            if (it != "-" &&
-                it != "%" &&
-                it != " " &&
-                it != "")
-            { res.add(it) }
-        }
 
+    return try {
+        for (i in parts) {
+            if (    i != "-" &&
+                    i != "%" &&
+                    i != " " &&
+                    i != "") {
+                res.add(i)
+            }
+        }
         res.removeAt(0)
 
         if (res.size == 0) throw Exception()
 
-        res.forEach {
-            if (it.toInt() > max)
-                max = it.toInt()
-        }
-
-        max
+        res.maxBy{it.toInt()}!!.toInt()
     }
     catch (e: Exception) { -1 }
 }
@@ -235,28 +194,21 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val res1 = mutableListOf("")
-    val res2 = mutableListOf("")
-    var max = 0
+    val list = mutableListOf("")
     val parts = jumps.split(" ")
     return try {
-        for (part in 1..parts.size step(2)) {
+        for (part in 1..parts.size step 2) {
             for (i in parts[part]) {
-                res1.clear()
-                res1.add(i.toString())
-                if ("+" in res1) res2.add(parts[part-1])
+                if ("+" == i.toString()) {
+                    list.add(parts[part - 1])
+                }
             }
         }
+        list.removeAt(0)
 
-        res2.removeAt(0)
+        if (list.size == 0) throw Exception()
 
-        if (res2.size == 0)  throw Exception()
-
-        res2.forEach {
-            if (it.toInt() > max)
-                max = it.toInt()
-        }
-        max
+        list.maxBy{it.toInt()}!!.toInt()
     }
     catch (e: Exception) { -1 }
 }
@@ -272,7 +224,6 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val list = mutableListOf("")
-    val plusmin = mutableListOf("")
     var res = 0
     val number = mutableListOf("")
     var count = 0
@@ -302,17 +253,15 @@ fun plusMinus(expression: String): Int {
 
         if (list.size == 0) count++
 
-        for (i in 1 until list.size step (2)) {
-            plusmin.clear()
-            plusmin.add(list[i])
+        for (i in 1 until list.size step 2) {
             when {
-                ("+" in plusmin) -> res += list[i + 1].toInt()
-                "-" in plusmin -> res -= list[i + 1].toInt()
+                "+" == list[i] -> res += list[i + 1].toInt()
+                "-" == list[i] -> res -= list[i + 1].toInt()
                 else -> count++
             }
         }
 
-        for (i in 0..list.size - list.size) { res += list[i].toInt() }
+        res += list[0].toInt()
     }
 
     return if (count == 0) res else throw java.lang.IllegalArgumentException()
@@ -329,21 +278,19 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     var k = 0
-    val parts = str.split(" ")
-    return try {
-        if (parts.size == 1)
-            return -1
-        else {
-            for (i in 0 until parts.size) {
-                if (parts[i].toLowerCase() == parts[i + 1].toLowerCase())
-                    return k
-                k += parts[i].length + 1
-            }
-        }
+    val parts = str.toLowerCase().split(" ")
 
-        -1
+    if (parts.size == 1)
+        return -1
+    else {
+        for (i in 0 until parts.size) {
+            if (parts[i] == parts[i + 1])
+                return k
+            k += parts[i].length + 1
+        }
     }
-    catch (e: Exception) { -1 }
+
+    return -1
 }
 
 /**
@@ -358,44 +305,21 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    val list = mutableListOf("")
-    var str = ""
     var res = ""
-    var count = 0
     var max = 0.0
-    var k = 0
-    var resMany: String
-    val partsDescription = description.split(" ")
-
-    if (partsDescription.size % 2 == 1)
-        count = 1
-    else
-    {
-        description.forEach { if (it.toString() != ";") list.add(it.toString()) }
-        list.forEach { str += it }
-
-        val partsRes = str.split(" ")
-
-        for (i in 1 until partsRes.size step (2)) {
-            if (partsRes[i].toDouble() > max)
-                max = partsRes[i].toDouble()
-        }
-
-        for (i in 0 until partsRes.size) {
-            if (partsRes[i] == max.toString()) {
-                if (k == 0) {
-                    res = partsRes[i - 1]
-                    k++
-                } else {
-                    resMany = partsRes[i]
-                    res = "Any good with price $resMany"
-                }
+    val list = description.split("; ")
+    return if (description == "") ""
+    else {
+        list.forEach {
+            val partsRes = it.split(" ")
+            if (partsRes[1].toDouble() > max) {
+                max = partsRes[1].toDouble()
+                res = partsRes[0]
             }
         }
 
+        res
     }
-
-    return if (count == 0) res else ""
 }
 
 /**
@@ -411,69 +335,27 @@ fun mostExpensive(description: String): String {
  */
 fun fromRoman(roman: String): Int {
     var res = 0
-    var roma = ""
-    val parts = roman.split("")
+    var num: Int
+    var numPrev = Int.MAX_VALUE
+    val rim = listOf("", "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I","","","","","","")
+    val rus: List<Int> = listOf(0, 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
     if (roman == "") return -1
-    if (!Regex("""M{0,99999999}(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
+    if (!Regex("""M*(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
 
-    for (i in 0 until parts.size) {
-        roma += parts[i]
+    for (i in 0 until roman.length) {
+        for (s in 0 until rim.size) {
+            if (roman[i].toString() == rim[s]) {
+                num = rus[s]
+                res += num
+                if (numPrev < num) {
+                    res -= 2 * numPrev
+                }
+                numPrev = rus[s]
+            }
+        }
+
     }
-
-    for (i in 0 until parts.size) {
-        if (parts[i] == "M" && parts[i-1] != "C") {
-            res += 1000
-        }
-
-        if (parts[i] == "C" && parts[i+1] == "M") {
-            res += 900
-        }
-
-        if (parts[i] == "D" && parts[i-1] != "C") {
-            res += 500
-        }
-
-        if (parts[i] == "C" && parts[i+1] == "D") {
-            res += 400
-        }
-
-        if (parts[i] == "C" && parts[i+1] != "D" && parts[i+1] != "M" && parts[i-1] != "X") {
-            res += 100
-        }
-
-        if (parts[i] == "X" && parts[i+1] == "C") {
-            res += 90
-        }
-
-        if (parts[i] == "L" && parts[i-1] != "X") {
-            res += 50
-        }
-
-        if (parts[i] == "X" && parts[i+1] == "L") {
-            res += 40
-        }
-
-        if (parts[i] == "X" && parts[i+1] != "C" && parts[i+1] != "L" && parts[i-1] != "I" ) {
-            res += 10
-        }
-
-        if (parts[i] == "I" && parts[i+1] == "X") {
-            res += 9
-        }
-
-        if (parts[i] == "V" && parts[i-1] != "I") {
-            res += 5
-        }
-
-        if (parts[i] == "I" && parts[i+1] == "V") {
-            res += 4
-        }
-
-        if (parts[i] == "I" && parts[i+1] != "V" && parts[i+1] != "X") {
-            res += 1
-        }
-    }
-        return res
+    return res
 }
 
 /**
@@ -514,60 +396,38 @@ fun fromRoman(roman: String): Int {
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
 /*
+    val list = commands.toMutableList()
+    val set = setOf('>', '<', '+', '-', '[', ']', ' ')
     val res = mutableListOf<Int>()
-    val list = mutableListOf("")
-    val list2 = mutableListOf("")
-    var str = ""
-    val resCells = mutableListOf<Int>()
-    var start = 0
-    var s1=0
-    var k=0
-    var s2=0
+    var start = cells / 2
+    var end = 0
 
-    commands.forEach {
-        if (
-                it.toString() == "<" ||
-                it.toString() == ">" ||
-                it.toString() == "+" ||        //udalyaem vse lishnie simvoli
-                it.toString() == "-" ||
-                it.toString() == "[" ||
-                it.toString() == "]" ||
-                it.toString() == " ") {
-            list.add(it.toString())
+    commands.forEach { if (it !in set) throw Exception() }
+    for (i in 0 until cells) res.add(0)
+
+    for (i in 0 until list.size) {
+        if (end != limit) {
+            if (list[i] == ' ') {
+                end++
+            }
+            if (list[i] == '+') {
+                end++
+                res[start]++
+            }
+            if (list[i] == '-') {
+                end++
+                res[start]--
+            }
+            if (list[i] == '>') {
+                end++
+                start++
+            }
+            if (list[i] == '<') {
+                end++
+                start--
+            }
         }
-        else throw Exception()
     }
-    list.forEach {if (it != " ") list2.add(it) }
-
-    list2.removeAt(0)
-    list2.removeAt(0)
-
-    for (i in 0 until cells) {
-        resCells.add(0)
-    }
-     /* создали список нулей resCells
-     список и строку для команд<>+ list, str
-      */
-    if (cells%2==0) start=cells/2 else start=(cells+1)/2
-    // cтарт точка от которой начинается счетчик
-    while (s1==0) {
-    for (i in 0 until list2.size) {
-
-    if (list2[i] == "+" && s1 == 0) resCells[start]++; k++
-    if (list2[i] == "-" && s1 == 0) resCells[start]--; k++
-    if (list2[i] == ">" && s1 == 0) start++; k++
-    if (list2[i] == "<" && s1 == 0) start--; k++
-    if (list2[i] == "[" && resCells[start] == 0) s1 = 1
-    if (list2[i] == "+" && s1 != 0) resCells[start]++; k++
-    if (list2[i] == "-" && s1 != 0) resCells[start]--; k++
-    if (list2[i] == ">" && s1 != 0) start++; k++
-    if (list2[i] == "<" && s1 != 0) start--; k++
-    if (list2[i] == "]" && resCells[start] == 0) s1 = 1
-    if (list2[i] == "]" && resCells[start] != 0) s1 = 0; s2=1
-    println(resCells)
-}
-    }
-
-    return resCells
+    return res
 }
 */
