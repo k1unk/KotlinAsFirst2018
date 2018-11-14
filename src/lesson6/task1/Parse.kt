@@ -290,7 +290,7 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     var res = ""
-    var max = 0.0
+    var max = -1.0
     val list = description.split("; ")
     return if (description == "") ""
     else {
