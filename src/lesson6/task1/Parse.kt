@@ -209,10 +209,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    val list = mutableListOf("")
     var res = 0
-    val number = mutableListOf("")
-    var count = 0
     val num = setOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
     val all = setOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-")
     val parts = expression.split(" ")
@@ -220,37 +217,33 @@ fun plusMinus(expression: String): Int {
     for (i in 0 until parts.size) {
         for (o in parts[i]) {
             if (o.toString() !in all )
-                count++
+                throw java.lang.IllegalArgumentException()
         }
     }
 
-    if (parts.size % 2 == 0) { count++ }
+    if (parts.size % 2 == 0) { throw java.lang.IllegalArgumentException() }
     else {
-        for (part in 0..parts.size step (2)) {
+        val list = parts.toMutableList()
+
+        for (part in 0..parts.size step 2) {
             for (i in parts[part]) {
-                number.add(i.toString())
-                number.removeAt(0)
-                if (number[0] !in num) count++
+                if (i.toString() !in num) throw java.lang.IllegalArgumentException()
             }
         }
 
-        for (part in parts) { list.add(part) }
-        list.removeAt(0)
-
-        if (list.size == 0) count++
-
+        if (list.size == 0) throw java.lang.IllegalArgumentException()
         for (i in 1 until list.size step 2) {
             when {
                 "+" == list[i] -> res += list[i + 1].toInt()
                 "-" == list[i] -> res -= list[i + 1].toInt()
-                else -> count++
+                else -> throw java.lang.IllegalArgumentException()
             }
         }
 
         res += list[0].toInt()
     }
 
-    return if (count == 0) res else throw java.lang.IllegalArgumentException()
+    return res
 }
 
 /**
@@ -267,9 +260,7 @@ fun firstDuplicateIndex(str: String): Int {
     val parts = str.toLowerCase().split(" ")
     if (parts.size == 1)
         return -1
-    for (i in 0 until parts.size) {
-        if (i + 1 == parts.size)
-            return -1
+    for (i in 0 until parts.size - 1) {
         if (parts[i] == parts[i + 1])
             return k
         k += parts[i].length + 1
@@ -321,24 +312,21 @@ fun fromRoman(roman: String): Int {
     var res = 0
     var num: Int
     var numPrev = Int.MAX_VALUE
-    val rim = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    val rus = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val map = mapOf('M' to 1000, 'D' to 500, 'C' to 100, 'L' to 50, 'X' to 10, 'V' to 5, 'I' to 1)
 
     if (roman == "") return -1
     if (!Regex("""M*(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
 
     for (i in 0 until roman.length) {
-        for (s in 0 until rim.size) {
-            if (roman[i].toString() == rim[s]) {
-                num = rus[s]
+        for ((rim, rus) in map)
+            if (roman[i] == rim) {
+                num = rus
                 res += num
                 if (numPrev < num) {
                     res -= 2 * numPrev
                 }
-                numPrev = rus[s]
+                numPrev = rus
             }
-        }
-
     }
     return res
 }
