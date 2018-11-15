@@ -319,7 +319,7 @@ fun fromRoman(roman: String): Int {
     if (!Regex("""M*(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
 
     for (i in 0 until roman.length) {
-        for ((rim, rus) in map)
+        for ((rim, rus) in map) {
             if (roman[i] == rim) {
                 num = rus
                 res += num
@@ -328,6 +328,7 @@ fun fromRoman(roman: String): Int {
                 }
                 numPrev = rus
             }
+        }
     }
     return res
 }
