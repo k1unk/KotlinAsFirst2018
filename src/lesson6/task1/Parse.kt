@@ -220,9 +220,9 @@ fun plusMinus(expression: String): Int {
                 throw java.lang.IllegalArgumentException()
         }
     }
-    if (expression == "") { throw java.lang.IllegalArgumentException() }
+    if (expression == "") throw java.lang.IllegalArgumentException()
 
-    if (parts.size % 2 == 0) { throw java.lang.IllegalArgumentException() }
+    if (parts.size % 2 == 0) throw java.lang.IllegalArgumentException()
     else {
         val list = parts.toMutableList()
 
