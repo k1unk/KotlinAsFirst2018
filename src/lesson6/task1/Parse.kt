@@ -210,38 +210,38 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     var res = 0
-    val num = setOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-    val all = setOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-")
+    val num = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+    val all = setOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-')
     val parts = expression.split(" ")
 
-    for (i in 0 until parts.size) {
-        for (o in parts[i]) {
-            if (o.toString() !in all )
-                throw java.lang.IllegalArgumentException()
+    for (part in parts) {
+        part.all {
+            if (it !in all) throw java.lang.IllegalArgumentException()
+            else true
         }
     }
+
     if (expression == "") throw java.lang.IllegalArgumentException()
 
     if (parts.size % 2 == 0) throw java.lang.IllegalArgumentException()
     else {
-        val list = parts.toMutableList()
-
         for (part in 0..parts.size step 2) {
-            for (i in parts[part]) {
-                if (i.toString() !in num) throw java.lang.IllegalArgumentException()
+            parts[part].all {
+                if (it !in num) throw java.lang.IllegalArgumentException()
+                else true
             }
         }
 
-        if (list.size == 0) throw java.lang.IllegalArgumentException()
-        for (i in 1 until list.size step 2) {
+        if (parts.isEmpty()) throw java.lang.IllegalArgumentException()
+        for (i in 1 until parts.size step 2) {
             when {
-                "+" == list[i] -> res += list[i + 1].toInt()
-                "-" == list[i] -> res -= list[i + 1].toInt()
+                "+" == parts[i] -> res += parts[i + 1].toInt()
+                "-" == parts[i] -> res -= parts[i + 1].toInt()
                 else -> throw java.lang.IllegalArgumentException()
             }
         }
 
-        res += list[0].toInt()
+        res += parts[0].toInt()
     }
 
     return res
@@ -319,15 +319,13 @@ fun fromRoman(roman: String): Int {
     if (!Regex("""M*(CM)?D?(CD)?C{0,3}(XC)?L?(XL)?X{0,3}(IX)?V?(IV)?I{0,3}""").matches(roman)) return -1
 
     for (i in 0 until roman.length) {
-        for ((rim, rus) in map) {
-            if (roman[i] == rim) {
-                num = rus
-                res += num
-                if (numPrev < num) {
-                    res -= 2 * numPrev
-                }
-                numPrev = rus
+        if (roman[i] in map) {
+            num = map.getValue(roman[i])
+            res += num
+            if (numPrev < num) {
+                res -= 2 * numPrev
             }
+            numPrev = map.getValue(roman[i])
         }
     }
     return res
