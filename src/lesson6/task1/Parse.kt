@@ -218,7 +218,6 @@ fun plusMinus(expression: String): Int {
         if (part.any { it !in all }) throw IllegalArgumentException()
     }
 
-
     if (expression == "") throw java.lang.IllegalArgumentException()
 
     if (parts.size % 2 == 0) throw java.lang.IllegalArgumentException()
