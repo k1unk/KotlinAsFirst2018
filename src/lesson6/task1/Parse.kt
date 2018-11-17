@@ -215,21 +215,16 @@ fun plusMinus(expression: String): Int {
     val parts = expression.split(" ")
 
     for (part in parts) {
-        part.all {
-            if (it !in all) throw java.lang.IllegalArgumentException()
-            else true
-        }
+        if (part.any { it !in all }) throw IllegalArgumentException()
     }
+
 
     if (expression == "") throw java.lang.IllegalArgumentException()
 
     if (parts.size % 2 == 0) throw java.lang.IllegalArgumentException()
     else {
         for (part in 0..parts.size step 2) {
-            parts[part].all {
-                if (it !in num) throw java.lang.IllegalArgumentException()
-                else true
-            }
+                if (parts[part].any { it !in num }) throw java.lang.IllegalArgumentException()
         }
 
         if (parts.isEmpty()) throw java.lang.IllegalArgumentException()
