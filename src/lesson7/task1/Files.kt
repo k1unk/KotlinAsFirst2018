@@ -291,7 +291,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             var c = 0
             for ((a, b) in dictionary) {
                 if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
-                    if (line[letter].toUpperCase() == line[letter] && line[letter].toLowerCase() != line[letter]) {
+                    if (line[letter].isUpperCase()) {
                         var bToMut = ""
                         for (i in 0..b.length - b.length) bToMut += b[i].toString().toUpperCase()
                         for (i in 1 until b.length) bToMut += b[i].toString().toLowerCase()
@@ -768,10 +768,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 outputStream.write("-$vichitaemoe   $result")
                 outputStream.newLine()
                 //3 строка
-                outputStream.write("".padStart(lhv.toString().length + 1, '-'))
+                outputStream.write("".padStart(lhv.toString().length, '-'))
                 outputStream.newLine()
                 // 4 строка
-                outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
+                outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length, ' '))
                 outputStream.newLine()
             }
             else {

@@ -209,8 +209,12 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     val x2 = b.x                                                     // координаты
     val y2 = b.y                                                     // точки b
 
-    val center = Point((x1 + x2) / 2, (y1 + y2) / 2)       // середина отрезка
-    val angle = atan2(y2 - y1, x2 - x1) + PI / 2               // угол
+    val center = Point((x1 + x2) / 2, (y1 + y2) / 2)           // середина отрезка
+
+    var angle = atan2(y2 - y1, x2 - x1) + PI / 2               // угол
+    if (angle < 0) while (angle < 0) angle += PI                     //
+    if (angle >= PI) while (angle >= PI) angle -= PI                 //
+
     return Line(center, angle)                                       // серединный перпендикуляр
 }
 
