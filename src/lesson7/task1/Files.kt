@@ -338,34 +338,32 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val resLongest = mutableListOf<String>()
     var wrongNum = 0
     var max = 0
-    if (File(inputName).readText().isNotEmpty()) {
-        for (line in File(inputName).readLines()) {
-            for (words in line.toLowerCase().split(" ")) {
-                for (first in 0 until words.length) {
-                    for (others in first + 1 until words.length) {
-                        if (words[first] == words[others]) {
-                            wrongNum = 1
-                        }
+    for (line in File(inputName).readLines()) {
+        for (words in line.toLowerCase().split(" ")) {
+            for (first in 0 until words.length) {
+                for (others in first + 1 until words.length) {
+                    if (words[first] == words[others]) {
+                        wrongNum = 1
                     }
                 }
-                if (wrongNum == 0) resAll.add(line)
             }
+            if (wrongNum == 0) resAll.add(line)
         }
-
-        for (i in 0 until resAll.size) {
-            var l = 0
-            for (j in resAll[i]) l++
-            if (l > max) max = l
-        }
-        for (i in 0 until resAll.size) {
-            if (resAll[i].length == max) resLongest.add(resAll[i])
-        }
-        for (i in 0..resLongest.size - 2) {
-            outputStream.write(resLongest[i])
-            outputStream.write(", ")
-        }
-        for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
     }
+    if (resAll.isEmpty()) outputStream.close()
+    for (i in 0 until resAll.size) {
+        var l = 0
+        for (j in resAll[i]) l++
+        if (l > max) max = l
+    }
+    for (i in 0 until resAll.size) {
+        if (resAll[i].length == max) resLongest.add(resAll[i])
+    }
+    for (i in 0..resLongest.size - 2) {
+        outputStream.write(resLongest[i])
+        outputStream.write(", ")
+    }
+    for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
     outputStream.close()
 }
 
@@ -736,38 +734,57 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
             ostatok = umenshaemoeString.toInt() - vichitaemoe
             outputStream.write(ostatok.toString().padStart(lhv.toString().length + 1, ' '))
-        } else outputStream.write(lhv.toString().padStart(lhv.toString().length + 1, ' '))
+        }
+        else outputStream.write(lhv.toString().padStart(lhv.toString().length + 1, ' '))
     }
 
     else {
-        vichitaemoe = lhv / rhv * rhv
-        if (lhv.toString().length > vichitaemoe.toString().length) {
+        if (lhv / rhv == 0 && lhv.toString().length > (lhv / rhv * rhv).toString().length ) {
             // 1 строка
             outputStream.write("$lhv | $rhv")
             outputStream.newLine()
             // 2 строка
-            outputStream.write("-$vichitaemoe   $result")
+            outputStream.write("-0".padStart(lhv.toString().length, ' '))
+            outputStream.write("   0")
             outputStream.newLine()
             //3 строка
-            outputStream.write("".padStart(lhv.toString().length + 1, '-'))
+            for (i in 0 until lhv.toString().length) {
+                outputStream.write("-")
+            }
             outputStream.newLine()
             // 4 строка
-            outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
-            outputStream.newLine()
+            outputStream.write(lhv.toString())
         }
         else {
-            // 1 строка
-            outputStream.write(" $lhv | $rhv")
-            outputStream.newLine()
-            // 2 строка
-            outputStream.write("-$vichitaemoe   $result")
-            outputStream.newLine()
-            // 3 строка
-            outputStream.write("".padStart(lhv.toString().length + 1, '-'))
-            outputStream.newLine()
-            // 4 строка
-            outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
-            outputStream.newLine()
+            vichitaemoe = lhv / rhv * rhv
+            if (lhv.toString().length > vichitaemoe.toString().length) {
+                // 1 строка
+                outputStream.write("$lhv | $rhv")
+                outputStream.newLine()
+                // 2 строка
+                outputStream.write("-$vichitaemoe   $result")
+                outputStream.newLine()
+                //3 строка
+                outputStream.write("".padStart(lhv.toString().length + 1, '-'))
+                outputStream.newLine()
+                // 4 строка
+                outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
+                outputStream.newLine()
+            }
+            else {
+                // 1 строка
+                outputStream.write(" $lhv | $rhv")
+                outputStream.newLine()
+                // 2 строка
+                outputStream.write("-$vichitaemoe   $result")
+                outputStream.newLine()
+                // 3 строка
+                outputStream.write("".padStart(lhv.toString().length + 1, '-'))
+                outputStream.newLine()
+                // 4 строка
+                outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
+                outputStream.newLine()
+            }
         }
     }
     outputStream.close()
