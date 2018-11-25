@@ -39,8 +39,7 @@ data class Square(val column: Int, val row: Int) {
  */
 fun square(notation: String): Square {
     val list = listOf("a", "b", "c", "d", "e", "f", "g", "h")
-    if (notation.toList().first() !in 'a'..'h' || notation.toList().last() !in '1'..'8' ||
-            notation.length != 2 || notation.isEmpty()) throw IllegalArgumentException()
+    if (!Regex("""[a-h][1-8]""").matches(notation)) throw IllegalArgumentException()
     val x1 = list.indexOf(notation.toList().first().toString()) + 1
     val y1 = notation.toList().last().toString().toInt()
     return Square(x1, y1)
@@ -167,44 +166,44 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 fun bishopTrajectory(start: Square, end: Square): List<Square> {
-    var x1 = start.column
-    var y1 = start.row
+    val x1 = start.column
+    val y1 = start.row
     val x2 = end.column
     val y2 = end.row
     val list = mutableListOf<Square>()
+    var x = x1                                                 // в какой мы точке на оси Х
+    var y = y1                                                 // в какой мы точке на оси Y
+    if ((x1 + y1) % 2 != (x2 + y2) % 2) return list                     // если добраться невозможно
 
-    if ((x1 + y1) % 2 != (x2 + y2) % 2) return list             // если добраться невозможно
+    list += Square(x, y)                                       // пишем координаты точки 1
 
-    list += Square(x1,y1)                                       // пишем координаты точки 1
+    if (x1 == x2 && y1 == y2) return list                      // если ходов 0
 
-    if (x1 == x2 && y1 == y2) return list                       // если ходов 0
-
-    if (x1 + y1 == x2 + y2 || x1 - y1 == x2 - y2) {             // если
-        list += Square(x2, y2)                                  // ходов
-        return list                                             // 1
+    if (x1 + y1 == x2 + y2 || x1 - y1 == x2 - y2) {            // если
+        list += Square(x2, y2)                                 // ходов
+        return list                                            // 1
     }
 
-    if ((x1 + x2) % 2 == (y1 + y2) % 2) {                       // если ходов 2
-        while (x1 + y1 != x2 + y2) {                                     // двигаемся
-            x1++                                                         // к
-            y1++                                                         // точке
-        }                                                                // 2
-        if (x1 !in 1..8 || y1 !in 1..8) {                       // если оказалось, что мы вышли за пределы доски
-            while (x1 != start.column) {                                 // возвращаемся
-                x1--                                                     // к
-                y1--                                                     // начальным
-            }                                                            // координатам
-            val sum = x1 + y1                                   // находим сумму, к которой будем стремиться
-            x1 = x2                                                      // переходим в
-            y1 = y2                                                      // координаты точки 2
-            while (x1 + y1 != sum) {                            // и двигаемся к
-                x1--                                            // точке 3
-                y1--                                            // от
-            }                                                   // координаты точки 2
-        }                                                       //
-        list += Square(x1, y1)                                  // пишем координаты точки 2
-    }                                                           //
-    list += Square(x2, y2)                                      // пишем координаты точки 3
+    if ((x1 + x2) % 2 == (y1 + y2) % 2) {                      // если ходов 2
+        while (x + y != x2 + y2) {                                      // двигаемся
+            x++                                                         // к
+            y++                                                         // точке
+        }                                                               // 2
+        if (x !in 1..8 || y !in 1..8) {                        // если оказалось, что мы вышли за пределы доски
+            x = x1                                                      // возвращаемся к
+            y = y1                                                      // начальным координатам
+
+            val sum = x + y                                    // находим сумму, к которой будем стремиться
+            x = x2                                                      // переходим в
+            y = y2                                                      // координаты точки 2
+            while (x + y != sum) {                             // и двигаемся к
+                x--                                            // точке 3
+                y--                                            // от
+            }                                                  // координаты точки 2
+        }
+        list += Square(x, y)                                   // пишем координаты точки 2
+    }
+    list += Square(x2, y2)                                     // пишем координаты точки 3
 
     return list
 }
