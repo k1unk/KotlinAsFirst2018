@@ -173,9 +173,10 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
     val list = mutableListOf<Square>()
     var x = x1                                                 // в какой мы точке на оси Х
     var y = y1                                                 // в какой мы точке на оси Y
-    if ((x1 + y1) % 2 != (x2 + y2) % 2) return list                     // если добраться невозможно
 
-    list += Square(x, y)                                       // пишем координаты точки 1
+    if ((x1 + y1) % 2 != (x2 + y2) % 2) return list            // если добраться невозможно
+
+    list += Square(x1, y1)                                       // пишем координаты точки 1
 
     if (x1 == x2 && y1 == y2) return list                      // если ходов 0
 
@@ -190,9 +191,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
             y++                                                         // точке
         }                                                               // 2
         if (x !in 1..8 || y !in 1..8) {                        // если оказалось, что мы вышли за пределы доски
-            x = x1                                                      // возвращаемся к
-            y = y1                                                      // начальным координатам
-            val sum = x + y                                    // находим сумму, к которой будем стремиться
+            val sum = x1 + y1                                  // находим сумму, к которой будем стремиться
             x = x2                                                      // переходим в
             y = y2                                                      // координаты точки 3
             while (x + y != sum) {                             // и двигаемся к
