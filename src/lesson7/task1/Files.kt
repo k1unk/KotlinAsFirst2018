@@ -291,7 +291,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             var c = 0
             for ((a, b) in dictionary) {
                 if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
-                    if (line[letter].toUpperCase() == line[letter]) {
+                    if (line[letter].toUpperCase() == line[letter] && line[letter].toLowerCase() != line[letter]) {
                         var bToMut = ""
                         for (i in 0..b.length - b.length) bToMut += b[i].toString().toUpperCase()
                         for (i in 1 until b.length) bToMut += b[i].toString().toLowerCase()
@@ -359,9 +359,11 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     for (i in 0 until resAll.size) {
         if (resAll[i].length == max) resLongest.add(resAll[i])
     }
-    for (i in 0..resLongest.size - 2) {
-        outputStream.write(resLongest[i])
-        outputStream.write(", ")
+    if (resLongest.size > 1) {
+        for (i in 0..resLongest.size - 2) {
+            outputStream.write(resLongest[i])
+            outputStream.write(", ")
+        }
     }
     for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
     outputStream.close()
@@ -727,8 +729,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 outputStream.write("-$vichitaemoe")
                 outputStream.newLine()
 
-                outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
-                for (i in 0 until vichitaemoe.toString().length + 1) outputStream.write("-")
+                outputStream.write("".padStart(minOf(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1,
+                        lhv.toString().length+1 - ostalosTcifr - umenshaemoeString.length ), ' '))
+                for (i in 0 until maxOf(vichitaemoe.toString().length + 1, umenshaemoeString.length)) outputStream.write("-")
                 outputStream.newLine()
             }
 

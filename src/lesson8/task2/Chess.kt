@@ -39,7 +39,8 @@ data class Square(val column: Int, val row: Int) {
  */
 fun square(notation: String): Square {
     val list = listOf("a", "b", "c", "d", "e", "f", "g", "h")
-    if (notation.toList().first() !in 'a'..'h' || notation.toList().last() !in '1'..'8' || notation.length != 2) throw IllegalArgumentException()
+    if (notation.toList().first() !in 'a'..'h' || notation.toList().last() !in '1'..'8' ||
+            notation.length != 2 || notation.isEmpty()) throw IllegalArgumentException()
     val x1 = list.indexOf(notation.toList().first().toString()) + 1
     val y1 = notation.toList().last().toString().toInt()
     return Square(x1, y1)
