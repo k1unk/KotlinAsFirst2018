@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.Math.pow
 
 /**
  * Пример
@@ -71,7 +72,34 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val wrong1 = listOf('ж', 'ч', 'ш', 'щ')
+    val wrong2small = listOf('ы', 'я', 'ю')
+    val wrong2big = listOf('Ы','Я','Ю')
+    val right2small = listOf('и', 'а', 'у')
+    val right2big = listOf('И','А','У')
+    var countWrong = 0                    //чтобы узнать была ли предыдущая буква ЖЧШЩ и стоит ли делать проверку на ЫЯЮ
+    var countWrote = 0                    //чтобы узнать была ли буква уже написана
+    var index: Int
+    for (line in File(inputName).readText()) {
+        if (line.toLowerCase() !in wrong2small) countWrong = 0
+        if (line.toLowerCase() in wrong1) countWrong = 1
+        if (line in wrong2small && countWrong == 1) {
+            index = wrong2small.indexOf(line)
+            outputStream.write(right2small[index].toString())
+            countWrote = 1
+            countWrong = 0
+        }
+        if (line in wrong2big && countWrong == 1) {
+            index = wrong2big.indexOf(line)
+            outputStream.write(right2big[index].toString())
+            countWrote = 1
+            countWrong = 0
+        }
+        if (countWrote == 0) outputStream.write(line.toString())
+        else countWrote = 0
+    }
+    outputStream.close()
 }
 
 /**
@@ -92,8 +120,26 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    var maxLength = 0
+
+    for (line in File(inputName).readLines()) {
+        if (line.trim().length > maxLength) maxLength = line.trim().length
+    }
+
+    for (line in File(inputName).readLines()) {
+        var count = if (line.trim().length % 2 == 0) (maxLength - line.trim().length) / 2
+                    else (maxLength - line.trim().length) / 2
+        while (count > 0) {
+            count--
+            outputStream.write(" ")
+        }
+        outputStream.write(line.trim())
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
+
 
 /**
  * Сложная
@@ -123,7 +169,45 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    var maxLength = 0                           // максимальная длина строки
+
+    for (line in File(inputName).readLines()) {
+        if (line.trim().length > maxLength) maxLength = line.trim().length
+    }
+
+    for (line in File(inputName).readLines()) {
+        var countWords = 0                     // сколько слов в строке
+        var countLetters = 0                   // количество букв в строке
+        var countSpaces: Int                   // количество пробельных отрезков в строке
+        var stabilSpaces = 0                   // стабильное количество пробелов после слова
+        var spacesPlus1: Int                   // в скольки пробельных отрезках надо добавить пробел
+
+        for (part in line.trim().split(" ")) countWords++
+        for (part in line) if (part != ' ') countLetters++
+        countSpaces = countWords - 1
+        if (countSpaces != 0) stabilSpaces = (maxLength - countLetters) / countSpaces
+        spacesPlus1 = maxLength - countLetters - stabilSpaces * countSpaces
+
+        for (part in line.trim().split(" ")) {
+            if (countWords > 1) {
+                var newStabilProbels = stabilSpaces
+                outputStream.write(part)
+                while (newStabilProbels > 0) {
+                    outputStream.write(" ")
+                    newStabilProbels--
+                }
+                if (spacesPlus1 > 0) {
+                    outputStream.write(" ")
+                    spacesPlus1--
+                }
+                countWords--
+            }
+            else outputStream.write(part)
+        }
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 /**
@@ -144,13 +228,31 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    val resTop20 = mutableMapOf<String, Int>()
+    var top = 20
+    var reg2: String
+    for (line in File(inputName).readLines()) {
+        val reg1 = Regex("""[^ a-zA-Zа-яёА-ЯЁ]*""").replace(line, " ")
+        for (a in reg1.split("  ")) {
+            reg2 = Regex("""[^a-zA-Zа-яёА-ЯЁ]+""").replace(a, "").toLowerCase()
+            if (reg2.isNotEmpty()) res[reg2] = res.getOrDefault(reg2, 0) + 1
+        }
+    }
+    for ((a, b) in res.toList().sortedByDescending { it.second }.toMap().toMutableMap()) {
+        if (top > 0) resTop20[a] = b
+        top--
+    }
+    return resTop20
+}
+
 
 /**
  * Средняя
  *
  * Реализовать транслитерацию текста из входного файла в выходной файл посредством динамически задаваемых правил.
-
+ *
  * Во входном файле с именем inputName содержится некоторый текст (в том числе, и на русском языке).
  *
  * В ассоциативном массиве dictionary содержится словарь, в котором некоторым символам
@@ -182,7 +284,28 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+
+    for (line in File(inputName).readLines()) {
+        for (letter in 0 until line.length) {
+            var c = 0
+            for ((a, b) in dictionary) {
+                if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
+                    if (line[letter] in 'A'..'Z' || line[letter] in 'А'..'Я' || line[letter] == 'Ё') {
+                        var bToMut = ""
+                        for (i in 0..b.length - b.length) bToMut += b[i].toString().toUpperCase()
+                        for (i in 1 until b.length) bToMut += b[i].toString().toLowerCase()
+                        outputStream.write(bToMut)
+                    }
+                    else outputStream.write(b.toLowerCase())
+                    c++
+                }
+            }
+            if (c == 0) outputStream.write(line[letter].toString())
+        }
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 /**
@@ -210,7 +333,39 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val resAll = mutableListOf<String>()
+    val resLongest = mutableListOf<String>()
+    var wrongNum = 0
+    var max = 0
+    for (line in File(inputName).readLines()) {
+        for (words in line.toLowerCase().split(" ")) {
+            for (first in 0 until words.length) {
+                for (others in first + 1 until words.length) {
+                    if (words[first] == words[others]) {
+                        wrongNum = 1
+                    }
+                }
+            }
+            if (wrongNum == 0) resAll.add(line)
+        }
+    }
+
+    for (i in 0 until resAll.size) {
+        var l = 0
+        for (j in resAll[i]) l++
+        if (l > max) max = l
+    }
+    for (i in 0 until resAll.size) {
+        if (resAll[i].length == max) resLongest.add(resAll[i])
+    }
+    for (i in 0..resLongest.size - 2) {
+        outputStream.write(resLongest[i])
+        outputStream.write(", ")
+    }
+    for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
+
+    outputStream.close()
 }
 
 /**
@@ -257,7 +412,80 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    var star1 = 0
+    var star2 = 0
+    var star12 = 0
+    var wave = 0
+
+    outputStream.write("<html>")
+    outputStream.newLine()
+    outputStream.write("<body>")
+    outputStream.newLine()
+    outputStream.write("<p>")
+    outputStream.newLine()
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) outputStream.write("</p><p>")
+
+        for (letter in 0 until line.length) {
+            when {
+                (star1 == 0 && line[letter] == '*' && line[letter - 1] != '*' && line[letter + 1] != '*' && star12 == 0) -> {
+                    star1 = 1
+                    star12 = 1
+                    outputStream.write("<i>")
+                }
+                (star1 == 1 && line[letter] == '*' && line[letter - 1] != '*' && line[letter + 1] != '*' && star12 == 1) -> {
+                    star1 = 0
+                    star12 = 0
+                    outputStream.write(("</i>"))
+                }
+
+
+                (star2 == 0 && line[letter] == '*' && line[letter + 1] == '*' && line[letter - 1] != '*') -> {
+                    star2 = 1
+                    star12 = 1
+                    outputStream.write(("<b>"))
+                }
+                (star2 == 0 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] != '*') -> { }
+                (star2 == 0 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] == '*' && star12 == 0) -> {
+                    star12 = 1
+                    outputStream.write("</i>")
+                }
+                (star2 == 1 && line[letter] == '*' && line[letter + 1] == '*' && line[letter - 1] != '*') -> {
+                    star2 = 0
+                    star12 = 0
+                    outputStream.write(("</b>"))
+                }
+                (star2 == 1 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] != '*') -> { }
+                (star2 == 1 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] == '*' && star12 == 1) -> {
+                    star12 = 0
+                    outputStream.write(("<i>"))
+                }
+
+
+                (wave == 0 && line[letter] == '~' && line[letter + 1] == '~' && line[letter - 1] != '~') -> {
+                    wave = 1
+                    outputStream.write(("<s>"))
+                }
+                (wave == 0 && line[letter] == '~' && line[letter - 1] == '~') -> { }
+                (wave == 1 && line[letter] == '~' && line[letter + 1] == '~' && line[letter - 1] != '~') -> {
+                    wave = 0
+                    outputStream.write(("</s>"))
+                }
+                (wave == 1 && line[letter] == '~' && line[letter - 1] == '~') -> { }
+                else -> outputStream.write((line[letter].toString()))
+            }
+        }
+        for (letter in line.length - 1 until line.length - 1) outputStream.write((line[letter].toString()))
+        for (letter in line.length until line.length) outputStream.write(line[letter].toString())
+    }
+    outputStream.write("</p>")
+    outputStream.newLine()
+    outputStream.write("</body>")
+    outputStream.newLine()
+    outputStream.write("</html>")
+    outputStream.newLine()
+    outputStream.close()
 }
 
 /**
@@ -395,7 +623,34 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val maxLength = (lhv * rhv).toString().length + 1
+    val lines = "".padStart(maxLength, '-')
+
+    outputStream.write(lhv.toString().padStart(maxLength, ' '))
+    outputStream.newLine()
+    outputStream.write("*")
+    outputStream.write(rhv.toString().padStart(maxLength - 1, ' '))
+    outputStream.newLine()
+    outputStream.write(lines)
+    outputStream.newLine()
+
+    for (i in 0..rhv.toString().length - rhv.toString().length) {
+        val numOfRhvLast = rhv / pow(10.0, i.toDouble()).toInt() % 10
+        outputStream.write((lhv * numOfRhvLast).toString().padStart(maxLength, ' '))
+        outputStream.newLine()
+    }
+    for (i in 1 until rhv.toString().length) {
+        val numOfRhv = rhv / pow(10.0, i.toDouble()).toInt() % 10
+        outputStream.write("+")
+        outputStream.write((lhv * numOfRhv).toString().padStart(maxLength - i - 1, ' '))
+        outputStream.newLine()
+    }
+    outputStream.write(lines)
+    outputStream.newLine()
+    outputStream.write((lhv * rhv).toString().padStart(maxLength, ' '))
+
+    outputStream.close()
 }
 
 
@@ -420,6 +675,68 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val result = lhv / rhv
+    var umenshaemoe = 0
+    var umenshaemoeString: String
+    var vichitaemoe: Int
+    var ostatok: Int
+    var ostalosTcifr: Int
+    var newTcifra: Int
+
+    // 1 строка
+    outputStream.write(" $lhv | $rhv")
+    outputStream.newLine()
+
+    // 2 строка
+    var stop = 0
+    for (i in 0 until lhv.toString().length) {
+        if (lhv / pow(10.0, (lhv.toString().length - i).toDouble()) / rhv > 1 && stop == 0) {
+            umenshaemoe = (lhv / pow(10.0, (lhv.toString().length - i).toDouble())).toInt()
+            stop = 1
+        }
+    }
+    vichitaemoe = umenshaemoe / rhv * rhv
+    outputStream.write("-$vichitaemoe")
+    for (i in 0..lhv.toString().length - vichitaemoe.toString().length + 2) outputStream.write(" ")
+    outputStream.write(result.toString())
+    outputStream.newLine()
+
+    // 3 строка
+    outputStream.write("".padStart(vichitaemoe.toString().length + 1, '-'))
+    outputStream.newLine()
+
+    //
+    ostalosTcifr = lhv.toString().length - umenshaemoe.toString().length
+
+    // остальные строки
+    if (lhv / rhv > 0) {
+        umenshaemoeString = umenshaemoe.toString()
+        while (ostalosTcifr > 0) {
+            ostatok = umenshaemoeString.toInt() - vichitaemoe
+            newTcifra = lhv / (pow(10.0, ostalosTcifr - 1.0)).toInt() % 10
+            umenshaemoeString = ostatok.toString().plus(newTcifra.toString())
+            vichitaemoe = umenshaemoeString.toInt() / rhv * rhv
+            ostalosTcifr--
+
+            outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - umenshaemoeString.length, ' '))
+            outputStream.write(umenshaemoeString)
+            outputStream.newLine()
+
+            outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
+            outputStream.write("-$vichitaemoe")
+            outputStream.newLine()
+
+            outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
+            for (i in 0 until vichitaemoe.toString().length + 1) outputStream.write("-")
+            outputStream.newLine()
+        }
+
+        ostatok = umenshaemoeString.toInt() - vichitaemoe
+        outputStream.write(ostatok.toString().padStart(lhv.toString().length + 1, ' '))
+    }
+    else outputStream.write(lhv.toString().padStart(lhv.toString().length + 1, ' '))
+
+    outputStream.close()
 }
 

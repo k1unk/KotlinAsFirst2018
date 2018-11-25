@@ -1,6 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson8.task2
 
+import kotlin.math.abs
+
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
  * Поэтому, обе координаты клетки (горизонталь row, вертикаль column) могут находиться в пределах от 1 до 8.
@@ -21,7 +23,11 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String {
+        val list = listOf("a", "b", "c", "d", "e", "f", "g", "h")
+        return if (!inside()) ""
+        else "${list[column - 1]}$row"
+    }
 }
 
 /**
@@ -31,7 +37,13 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    val list = listOf("a", "b", "c", "d", "e", "f", "g", "h")
+    val x1 = list.indexOf(notation.toList().first().toString()) + 1
+    val y1 = notation.toList().last().toString().toInt()
+    return if (Square(x1, y1).inside()) Square(x1, y1)
+    else throw IllegalArgumentException()
+}
 
 /**
  * Простая
@@ -56,7 +68,20 @@ fun square(notation: String): Square = TODO()
  * Пример: rookMoveNumber(Square(3, 1), Square(6, 3)) = 2
  * Ладья может пройти через клетку (3, 3) или через клетку (6, 1) к клетке (6, 3).
  */
-fun rookMoveNumber(start: Square, end: Square): Int = TODO()
+fun rookMoveNumber(start: Square, end: Square): Int {
+    val x1 = start.column
+    val y1 = start.row
+    val x2 = end.column
+    val y2 = end.row
+    return if (start.inside() && end.inside()) {
+        when {
+            (x1 == x2 && y1 == y2) -> 0
+            (x1 != x2 && y1 != y2) -> 2
+            else -> 1
+        }
+    }
+    else throw IllegalArgumentException()
+}
 
 /**
  * Средняя
@@ -72,7 +97,16 @@ fun rookMoveNumber(start: Square, end: Square): Int = TODO()
  *          rookTrajectory(Square(3, 5), Square(8, 5)) = listOf(Square(3, 5), Square(8, 5))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun rookTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun rookTrajectory(start: Square, end: Square): List<Square> {
+    val x1 = start.column
+    val y1 = start.row
+    val x2 = end.column
+    val y2 = end.row
+    val list = mutableListOf(Square(x1,y1))
+    if (x1 != x2) list += Square(x2, y1)
+    if (y1 != y2) list += Square(x2, y2)
+    return list
+}
 
 /**
  * Простая
@@ -97,7 +131,21 @@ fun rookTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Примеры: bishopMoveNumber(Square(3, 1), Square(6, 3)) = -1; bishopMoveNumber(Square(3, 1), Square(3, 7)) = 2.
  * Слон может пройти через клетку (6, 4) к клетке (3, 7).
  */
-fun bishopMoveNumber(start: Square, end: Square): Int = TODO()
+fun bishopMoveNumber(start: Square, end: Square): Int {
+    val x1 = start.column
+    val y1 = start.row
+    val x2 = end.column
+    val y2 = end.row
+    return if (start.inside() && end.inside()) {
+        when {
+            (x1 == x2 && y1 == y2) -> 0
+            (x1 + x2 == y1 + y2 || x1 - y1 == x2 - y2) -> 1
+            ((x1 + x2) % 2 == (y1 + y2) % 2) -> 2
+            else -> -1
+        }
+    }
+    else throw IllegalArgumentException()
+}
 
 /**
  * Сложная
@@ -117,7 +165,48 @@ fun bishopMoveNumber(start: Square, end: Square): Int = TODO()
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun bishopTrajectory(start: Square, end: Square): List<Square> {
+    var x1 = start.column
+    var y1 = start.row
+    val x2 = end.column
+    val y2 = end.row
+    val list = mutableListOf<Square>()
+
+    if ((x1 + x2) % 2 != (y1 + y2) % 2) return list             // если добраться невозможно
+
+    list += Square(x1,y1)                                       // пишем координаты точки 1
+
+    if (x1 == x2 && y1 == y2) return list                       // если ходов 0
+
+    if (x1 + x2 == y1 + y2 || x1 - y1 == x2 - y2) {             // если
+        list += Square(x2, y2)                                  // ходов
+        return list                                             // 1
+    }
+
+    if ((x1 + x2) % 2 == (y1 + y2) % 2) {                       // если ходов 2
+        while (x1 + y1 != x2 + y2) {                                     // двигаемся
+            x1++                                                         // к
+            y1++                                                         // точке
+        }                                                                // 2
+        if (x1 !in 1..8 || y1 !in 1..8) {                       // если оказалось, что мы вышли за пределы доски
+            while (x1 != start.column) {                                 // возвращаемся
+                x1--                                                     // к
+                y1--                                                     // начальным
+            }                                                            // координатам
+            val sum = x1 + y1                                   // находим сумму, к которой будем стремиться
+            x1 = x2                                                      // переходим в
+            y1 = y2                                                      // координаты точки 2
+            while (x1 + y1 != sum) {                            // и двигаемся к
+                x1--                                            // точке 3
+                y1--                                            // от
+            }                                                   // координаты точки 2
+        }                                                       //
+        list += Square(x1, y1)                                  // пишем координаты точки 2
+    }                                                           //
+    list += Square(x2, y2)                                      // пишем координаты точки 3
+
+    return list
+}
 
 /**
  * Средняя
@@ -139,7 +228,16 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: kingMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
-fun kingMoveNumber(start: Square, end: Square): Int = TODO()
+fun kingMoveNumber(start: Square, end: Square): Int {
+    val x1 = start.column
+    val y1 = start.row
+    val x2 = end.column
+    val y2 = end.row
+    return if (start.inside() && end.inside()) {
+        maxOf(abs(x1-x2), abs(y1-y2))
+    }
+    else throw IllegalArgumentException()
+}
 
 /**
  * Сложная
@@ -155,7 +253,54 @@ fun kingMoveNumber(start: Square, end: Square): Int = TODO()
  *          kingTrajectory(Square(3, 5), Square(6, 2)) = listOf(Square(3, 5), Square(4, 4), Square(5, 3), Square(6, 2))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun kingTrajectory(start: Square, end: Square): List<Square> {
+    var x1 = start.column
+    var y1 = start.row
+    val x2 = end.column
+    val y2 = end.row
+    val list = mutableListOf(Square(x1, y1))
+    while (x1 != x2 || y1 != y2) {
+        when {
+            (x1 > x2 && y1 > y2) -> {
+                list += Square(x1 - 1, y1 - 1)
+                x1--
+                y1--
+            }
+            (x1 > x2 && y1 == y2) -> {
+                list += Square(x1 - 1, y1)
+                x1--
+            }
+            (x1 > x2 && y1 < y2) -> {
+                list += Square(x1 - 1, y1 + 1)
+                x1--
+                y1++
+            }
+            (x1 == x2 && y1 > y2) -> {
+                list += Square(x1, y1 - 1)
+                y1--
+            }
+            (x1 == x2 && y1 < y2) -> {
+                list += Square(x1, y1 + 1)
+                y1++
+            }
+            (x1 < x2 && y1 > y2) -> {
+                list += Square(x1 + 1, y1 - 1)
+                x1++
+                y1--
+            }
+            (x1 < x2 && y1 == y2) -> {
+                list += Square(x1 + 1, y1)
+                x1++
+            }
+            (x1 < x2 && y1 < y2) -> {
+                list += Square(x1 + 1, y1 + 1)
+                x1++
+                y1++
+            }
+        }
+    }
+    return list
+}
 
 /**
  * Сложная
