@@ -105,15 +105,15 @@ data class Segment(val begin: Point, val end: Point) {
  */
 fun diameter(vararg points: Point): Segment {
     var res = Segment(points[0], points[1])
-    var max = 0
+    var max = 0.0
 
-    if (points.size<2) throw java.lang.IllegalArgumentException()
+    if (points.size < 2) throw java.lang.IllegalArgumentException()
 
     for (i in 0 until points.size) {
-        for (s in i+1 until points.size) {
+        for (s in i + 1 until points.size) {
             if (points[i].distance(points[s]) > max ) {
                 res = Segment(points[i], points[s])
-                max = points[i].distance(points[s]).toInt()
+                max = points[i].distance(points[s])
             }
         }
     }
@@ -198,15 +198,15 @@ fun lineByPoints(a: Point, b: Point): Line = Line(a, atan2(b.y - a.y, b.x - a.x)
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
-    val x1 = a.x                                                      // координаты
-    val y1 = a.y                                                      // точки a
+    val x1 = a.x                                                     // координаты
+    val y1 = a.y                                                     // точки a
 
-    val x2 = b.x                                                      // координаты
-    val y2 = b.y                                                      // точки b
+    val x2 = b.x                                                     // координаты
+    val y2 = b.y                                                     // точки b
 
-    val center = Point((x1 + x2) / 2, (y1 + y2) / 2)            // середина отрезка
-    val angle = atan2(y2 - y1, x2 - x1) + PI / 2                // угол
-    return Line(center, angle)                                        // серединный перпендикуляр
+    val center = Point(x1 / 2 + x2 / 2, y1 / 2 + y2 / 2)       // середина отрезка
+    val angle = atan2(y2 - y1, x2 - x1) + PI / 2               // угол
+    return Line(center, angle)                                       // серединный перпендикуляр
 }
 
 /**

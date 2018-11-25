@@ -39,10 +39,10 @@ data class Square(val column: Int, val row: Int) {
  */
 fun square(notation: String): Square {
     val list = listOf("a", "b", "c", "d", "e", "f", "g", "h")
+    if (notation.toList().first() !in 'a'..'h' || notation.toList().last() !in '1'..'8') throw IllegalArgumentException()
     val x1 = list.indexOf(notation.toList().first().toString()) + 1
     val y1 = notation.toList().last().toString().toInt()
-    return if (Square(x1, y1).inside()) Square(x1, y1)
-    else throw IllegalArgumentException()
+    return Square(x1, y1)
 }
 
 /**
@@ -139,7 +139,7 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
     return if (start.inside() && end.inside()) {
         when {
             (x1 == x2 && y1 == y2) -> 0
-            (x1 + x2 == y1 + y2 || x1 - y1 == x2 - y2) -> 1
+            (x1 + y1 == x1 + y2 || x1 - y1 == x2 - y2) -> 1
             ((x1 + x2) % 2 == (y1 + y2) % 2) -> 2
             else -> -1
         }
@@ -172,7 +172,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
     val y2 = end.row
     val list = mutableListOf<Square>()
 
-    if ((x1 + x2) % 2 != (y1 + y2) % 2) return list             // если добраться невозможно
+    if ((x1 + y1) % 2 != (x2 + y2) % 2) return list             // если добраться невозможно
 
     list += Square(x1,y1)                                       // пишем координаты точки 1
 

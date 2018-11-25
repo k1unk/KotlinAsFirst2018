@@ -291,7 +291,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             var c = 0
             for ((a, b) in dictionary) {
                 if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
-                    if (line[letter] in 'A'..'Z' || line[letter] in 'А'..'Я' || line[letter] == 'Ё') {
+                    if (line[letter].toUpperCase() == line[letter]) {
                         var bToMut = ""
                         for (i in 0..b.length - b.length) bToMut += b[i].toString().toUpperCase()
                         for (i in 1 until b.length) bToMut += b[i].toString().toLowerCase()
@@ -338,33 +338,34 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val resLongest = mutableListOf<String>()
     var wrongNum = 0
     var max = 0
-    for (line in File(inputName).readLines()) {
-        for (words in line.toLowerCase().split(" ")) {
-            for (first in 0 until words.length) {
-                for (others in first + 1 until words.length) {
-                    if (words[first] == words[others]) {
-                        wrongNum = 1
+    if (File(inputName).readText().isNotEmpty()) {
+        for (line in File(inputName).readLines()) {
+            for (words in line.toLowerCase().split(" ")) {
+                for (first in 0 until words.length) {
+                    for (others in first + 1 until words.length) {
+                        if (words[first] == words[others]) {
+                            wrongNum = 1
+                        }
                     }
                 }
+                if (wrongNum == 0) resAll.add(line)
             }
-            if (wrongNum == 0) resAll.add(line)
         }
-    }
 
-    for (i in 0 until resAll.size) {
-        var l = 0
-        for (j in resAll[i]) l++
-        if (l > max) max = l
+        for (i in 0 until resAll.size) {
+            var l = 0
+            for (j in resAll[i]) l++
+            if (l > max) max = l
+        }
+        for (i in 0 until resAll.size) {
+            if (resAll[i].length == max) resLongest.add(resAll[i])
+        }
+        for (i in 0..resLongest.size - 2) {
+            outputStream.write(resLongest[i])
+            outputStream.write(", ")
+        }
+        for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
     }
-    for (i in 0 until resAll.size) {
-        if (resAll[i].length == max) resLongest.add(resAll[i])
-    }
-    for (i in 0..resLongest.size - 2) {
-        outputStream.write(resLongest[i])
-        outputStream.write(", ")
-    }
-    for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
-
     outputStream.close()
 }
 
@@ -684,59 +685,91 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     var ostalosTcifr: Int
     var newTcifra: Int
 
-    // 1 строка
-    outputStream.write(" $lhv | $rhv")
-    outputStream.newLine()
+    if (lhv / rhv > 9) {
+        // 1 строка
+        outputStream.write(" $lhv | $rhv")
+        outputStream.newLine()
 
-    // 2 строка
-    var stop = 0
-    for (i in 0 until lhv.toString().length) {
-        if (lhv / pow(10.0, (lhv.toString().length - i).toDouble()) / rhv > 1 && stop == 0) {
-            umenshaemoe = (lhv / pow(10.0, (lhv.toString().length - i).toDouble())).toInt()
-            stop = 1
+        // 2 строка
+        var stop = 0
+        for (i in 0 until lhv.toString().length) {
+            if (lhv / pow(10.0, (lhv.toString().length - i).toDouble()) / rhv > 1 && stop == 0) {
+                umenshaemoe = (lhv / pow(10.0, (lhv.toString().length - i).toDouble())).toInt()
+                stop = 1
+            }
         }
-    }
-    vichitaemoe = umenshaemoe / rhv * rhv
-    outputStream.write("-$vichitaemoe")
-    for (i in 0..lhv.toString().length - vichitaemoe.toString().length + 2) outputStream.write(" ")
-    outputStream.write(result.toString())
-    outputStream.newLine()
+        vichitaemoe = umenshaemoe / rhv * rhv
+        outputStream.write("-$vichitaemoe")
+        for (i in 0..lhv.toString().length - vichitaemoe.toString().length + 2) outputStream.write(" ")
+        outputStream.write(result.toString())
+        outputStream.newLine()
 
-    // 3 строка
-    outputStream.write("".padStart(vichitaemoe.toString().length + 1, '-'))
-    outputStream.newLine()
+        // 3 строка
+        outputStream.write("".padStart(vichitaemoe.toString().length + 1, '-'))
+        outputStream.newLine()
 
-    //
-    ostalosTcifr = lhv.toString().length - umenshaemoe.toString().length
+        //
+        ostalosTcifr = lhv.toString().length - umenshaemoe.toString().length
 
-    // остальные строки
-    if (lhv / rhv > 0) {
-        umenshaemoeString = umenshaemoe.toString()
-        while (ostalosTcifr > 0) {
+        // остальные строки
+        if (lhv / rhv > 0) {
+            umenshaemoeString = umenshaemoe.toString()
+            while (ostalosTcifr > 0) {
+                ostatok = umenshaemoeString.toInt() - vichitaemoe
+                newTcifra = lhv / (pow(10.0, ostalosTcifr - 1.0)).toInt() % 10
+                umenshaemoeString = ostatok.toString().plus(newTcifra.toString())
+                vichitaemoe = umenshaemoeString.toInt() / rhv * rhv
+                ostalosTcifr--
+
+                outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - umenshaemoeString.length, ' '))
+                outputStream.write(umenshaemoeString)
+                outputStream.newLine()
+
+                outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
+                outputStream.write("-$vichitaemoe")
+                outputStream.newLine()
+
+                outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
+                for (i in 0 until vichitaemoe.toString().length + 1) outputStream.write("-")
+                outputStream.newLine()
+            }
+
             ostatok = umenshaemoeString.toInt() - vichitaemoe
-            newTcifra = lhv / (pow(10.0, ostalosTcifr - 1.0)).toInt() % 10
-            umenshaemoeString = ostatok.toString().plus(newTcifra.toString())
-            vichitaemoe = umenshaemoeString.toInt() / rhv * rhv
-            ostalosTcifr--
+            outputStream.write(ostatok.toString().padStart(lhv.toString().length + 1, ' '))
+        } else outputStream.write(lhv.toString().padStart(lhv.toString().length + 1, ' '))
+    }
 
-            outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - umenshaemoeString.length, ' '))
-            outputStream.write(umenshaemoeString)
+    else {
+        vichitaemoe = lhv / rhv * rhv
+        if (lhv.toString().length > vichitaemoe.toString().length) {
+            // 1 строка
+            outputStream.write("$lhv | $rhv")
             outputStream.newLine()
-
-            outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
-            outputStream.write("-$vichitaemoe")
+            // 2 строка
+            outputStream.write("-$vichitaemoe   $result")
             outputStream.newLine()
-
-            outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
-            for (i in 0 until vichitaemoe.toString().length + 1) outputStream.write("-")
+            //3 строка
+            outputStream.write("".padStart(lhv.toString().length + 1, '-'))
+            outputStream.newLine()
+            // 4 строка
+            outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
             outputStream.newLine()
         }
-
-        ostatok = umenshaemoeString.toInt() - vichitaemoe
-        outputStream.write(ostatok.toString().padStart(lhv.toString().length + 1, ' '))
+        else {
+            // 1 строка
+            outputStream.write(" $lhv | $rhv")
+            outputStream.newLine()
+            // 2 строка
+            outputStream.write("-$vichitaemoe   $result")
+            outputStream.newLine()
+            // 3 строка
+            outputStream.write("".padStart(lhv.toString().length + 1, '-'))
+            outputStream.newLine()
+            // 4 строка
+            outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
+            outputStream.newLine()
+        }
     }
-    else outputStream.write(lhv.toString().padStart(lhv.toString().length + 1, ' '))
-
     outputStream.close()
 }
 
