@@ -297,21 +297,22 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val outputStream = File(outputName).bufferedWriter()
 
     for (line in File(inputName).readLines()) {
-        for (letter in 0 until line.length) {
-            var c = 0
-            for ((a, b) in dictionary) {
-                if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
-                    if (line[letter].isUpperCase()) {
-                        var bToMut = ""
-                        for (i in 0..b.length - b.length) bToMut += b[i].toTitleCase()
-                        for (i in 1 until b.length) bToMut += b[i].toLowerCase()
-                        outputStream.write(bToMut)
+        if (line.isNotEmpty()) {
+            for (letter in 0 until line.length) {
+                var c = 0
+                for ((a, b) in dictionary) {
+                    if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
+                        if (line[letter].isUpperCase()) {
+                            var bToMut = ""
+                            for (i in 0..b.length - b.length) bToMut += b[i].toUpperCase()
+                            for (i in 1 until b.length) bToMut += b[i].toLowerCase()
+                            outputStream.write(bToMut)
+                        } else outputStream.write(b.toLowerCase())
+                        c++
                     }
-                    else outputStream.write(b.toLowerCase())
-                    c++
                 }
+                if (c == 0) outputStream.write(line[letter].toString())
             }
-            if (c == 0) outputStream.write(line[letter].toString())
         }
         outputStream.newLine()
     }
