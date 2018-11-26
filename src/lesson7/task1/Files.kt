@@ -173,7 +173,15 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     var maxLength = 0                           // максимальная длина строки
 
     for (line in File(inputName).readLines()) {
-        if (line.trim().length > maxLength) maxLength = line.trim().length
+        var countLength = 0
+        var previousIsSpace = 0
+        for (symbol in line.trim()) {
+            if (symbol != ' ') previousIsSpace = 0
+            if (symbol == ' ' && previousIsSpace == 0) previousIsSpace = 1
+            else { if (symbol == ' ' && previousIsSpace != 0) previousIsSpace = 2 }
+            if (previousIsSpace < 2) countLength++
+        }
+        if (countLength > maxLength) maxLength = countLength
     }
 
     for (line in File(inputName).readLines()) {
@@ -339,15 +347,15 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     var wrongNum = 0
     var max = 0
     for (line in File(inputName).readLines()) {
-        for (words in line.toLowerCase().split(" ")) {
+        for (words in line.split(" ")) {
             for (first in 0 until words.length) {
                 for (others in first + 1 until words.length) {
-                    if (words[first] == words[others]) {
+                    if (words[first].toLowerCase() == words[others].toLowerCase()) {
                         wrongNum = 1
                     }
                 }
             }
-            if (wrongNum == 0) resAll.add(line)
+            if (wrongNum == 0) resAll.add(words)
         }
     }
     if (resAll.isEmpty()) outputStream.close()
