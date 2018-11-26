@@ -171,8 +171,8 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
     val x2 = end.column
     val y2 = end.row
     val list = mutableListOf<Square>()
-    var x = x1                                                 // в какой мы точке на оси Х
-    var y = y1                                                 // в какой мы точке на оси Y
+    var x: Int                                                 // в какой мы точке на оси Х
+    var y: Int                                                 // в какой мы точке на оси Y
 
     if ((x1 + y1) % 2 != (x2 + y2) % 2) return list            // если добраться невозможно
 
@@ -186,23 +186,41 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
     }
 
     if ((x1 + x2) % 2 == (y1 + y2) % 2) {                      // если ходов 2
-        val c = (abs(x2 + y2 - x - y)) / 2
-        for (i in 0 until c) {                                          // двигаемся
-            x++                                                         // к
-            y++                                                         // точке
-        }                                                               // 2
-        if (x !in 1..8 || y !in 1..8) {                        // если оказалось, что мы вышли за пределы доски
-            val sum = x1 + y1                                  // находим сумму, к которой будем стремиться
-            x = x2                                                      // переходим в
-            y = y2                                                      // координаты точки 3
-            val c2 = (abs(x+y-sum))/2
-            for (i in 0 until c2) {                            // и двигаемся к
-                x--                                            // точке 2
-                y--                                            // от
-            }                                                  // координат точки 3
+        if (x1 + y1 > x2 + y2) {
+            x = x1
+            y = y1
+            while (x2 + y2 != x + y) {
+                x--
+                y--
+            }
+            if (x !in 1..8 || y !in 1..8) {
+                x = x2
+                y = y2
+                while (x1 + y1 != x + y) {
+                    x++
+                    y++
+                }
+            }
         }
-        list += Square(x, y)                                   // пишем координаты точки 2
+        else {
+            x = x2
+            y = y2
+            while (x1 + y1 != x + y) {
+                x--
+                y--
+            }
+            if (x !in 1..8 || y !in 1..8) {
+                x = x1
+                y = y1
+                while (x2 + y2 != x + y) {
+                    x++
+                    y++
+                }
+            }
+        }
+        list += Square(x, y)
     }
+
     list += Square(x2, y2)                                     // пишем координаты точки 3
 
     return list

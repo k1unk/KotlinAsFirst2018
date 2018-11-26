@@ -191,7 +191,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var stabilSpaces = 0                   // стабильное количество пробелов после слова
         var spacesPlus1: Int                   // в скольки пробельных отрезках надо добавить пробел
 
-        for (part in line.trim().split(" ")) countWords++
+        for (part in line.trim().split(" ")) {
+            if (part != "") countWords++
+        }
         for (part in line) if (part != ' ') countLetters++
         countSpaces = countWords - 1
         if (countSpaces != 0) stabilSpaces = (maxLength - countLetters) / countSpaces
@@ -301,8 +303,8 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
                     if (line[letter].isUpperCase()) {
                         var bToMut = ""
-                        for (i in 0..b.length - b.length) bToMut += b[i].toString().toUpperCase()
-                        for (i in 1 until b.length) bToMut += b[i].toString().toLowerCase()
+                        for (i in 0..b.length - b.length) bToMut += b[i].toTitleCase()
+                        for (i in 1 until b.length) bToMut += b[i].toLowerCase()
                         outputStream.write(bToMut)
                     }
                     else outputStream.write(b.toLowerCase())
@@ -348,14 +350,16 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     var max = 0
     for (line in File(inputName).readLines()) {
         for (words in line.split(" ")) {
-            for (first in 0 until words.length) {
-                for (others in first + 1 until words.length) {
-                    if (words[first].toLowerCase() == words[others].toLowerCase()) {
-                        wrongNum = 1
+            if (words.length > 1) {
+                for (first in 0 until words.length - 1) {
+                    for (others in first + 1 until words.length) {
+                        if (words[first].toLowerCase() == words[others].toLowerCase()) {
+                            wrongNum = 1
+                        }
                     }
                 }
+                if (wrongNum == 0) resAll.add(words)
             }
-            if (wrongNum == 0) resAll.add(words)
         }
     }
     if (resAll.isEmpty()) outputStream.close()
