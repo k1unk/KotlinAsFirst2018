@@ -218,7 +218,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
                 }
             }
         }
-        list += Square(x, y)
+        list += Square(x, y)                                   // пишем координаты точки 2
     }
 
     list += Square(x2, y2)                                     // пишем координаты точки 3
