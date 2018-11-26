@@ -111,7 +111,7 @@ fun diameter(vararg points: Point): Segment {
 
     for (i in 0 until points.size) {
         for (s in i + 1 until points.size) {
-            if (points[i].distance(points[s]) > max ) {
+            if (points[i].distance(points[s]) > max) {
                 res = Segment(points[i], points[s])
                 max = points[i].distance(points[s])
             }

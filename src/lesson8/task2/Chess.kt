@@ -102,7 +102,7 @@ fun rookTrajectory(start: Square, end: Square): List<Square> {
     val y1 = start.row
     val x2 = end.column
     val y2 = end.row
-    val list = mutableListOf(Square(x1,y1))
+    val list = mutableListOf(Square(x1, y1))
     if (x1 != x2) list += Square(x2, y1)
     if (y1 != y2) list += Square(x2, y2)
     return list
@@ -252,7 +252,7 @@ fun kingMoveNumber(start: Square, end: Square): Int {
     val x2 = end.column
     val y2 = end.row
     return if (start.inside() && end.inside()) {
-        maxOf(abs(x1-x2), abs(y1-y2))
+        maxOf(abs(x1 - x2), abs(y1 - y2))
     }
     else throw IllegalArgumentException()
 }

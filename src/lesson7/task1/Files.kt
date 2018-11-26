@@ -75,9 +75,9 @@ fun sibilants(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val wrong1 = listOf('ж', 'ч', 'ш', 'щ')
     val wrong2small = listOf('ы', 'я', 'ю')
-    val wrong2big = listOf('Ы','Я','Ю')
+    val wrong2big = listOf('Ы', 'Я', 'Ю')
     val right2small = listOf('и', 'а', 'у')
-    val right2big = listOf('И','А','У')
+    val right2big = listOf('И', 'А', 'У')
     var countWrong = 0                    //чтобы узнать была ли предыдущая буква ЖЧШЩ и стоит ли делать проверку на ЫЯЮ
     var countWrote = 0                    //чтобы узнать была ли буква уже написана
     var index: Int
@@ -755,7 +755,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     }
 
     else {
-        if (lhv / rhv == 0 && lhv.toString().length > (lhv / rhv * rhv).toString().length ) {
+        if (lhv / rhv == 0 && lhv.toString().length > (lhv / rhv * rhv).toString().length) {
             // 1 строка
             outputStream.write("$lhv | $rhv")
             outputStream.newLine()
