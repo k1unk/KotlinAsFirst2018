@@ -127,24 +127,11 @@ fun diameter(vararg points: Point): Segment {
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
 fun circleByDiameter(diameter: Segment): Circle {
-    val x1 = diameter.begin.x                                  // координаты
-    val y1 = diameter.begin.y                                  // точки
-    val point1 = Point(x1, y1)                                 // 1
-
-    val x2 = diameter.end.x                                    // координаты
-    val y2 = diameter.end.y                                    // точки
-    val point2 = Point(x2, y2)                                 // 2
-
-    val pointX = (x1 + x2) / 2                                 // середина
-    val pointY = (y1 + y2) / 2                                 // отрезка
-
-    val center = Point(pointX, pointY)                         // центр круга
-
-    val diam = point1.distance(point2)                         // расстояние диаметра
-
-    return Circle(center, diam / 2)                            // рисуем круг
+    val middleX = (diameter.begin.x + diameter.begin.y) / 2
+    val middleY = (diameter.end.x + diameter.end.y) / 2
+    val diam = Point(diameter.begin.x, diameter.begin.y).distance(Point(diameter.end.x, diameter.end.y))
+    return Circle(Point(middleX, middleY), diam / 2)
 }
-
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -209,9 +196,9 @@ fun bisectorByPoints(a: Point, b: Point): Line {
     val x2 = b.x                                                     // координаты
     val y2 = b.y                                                     // точки b
 
-    val center = Point((x1 + x2) / 2, (y1 + y2) / 2)           // середина отрезка
+    val center = Point((x1 + x2) / 2, (y1 + y2) / 2)                 // середина отрезка
 
-    var angle = atan2(y2 - y1, x2 - x1) + PI / 2               // угол
+    var angle = atan2(y2 - y1, x2 - x1) + PI / 2                     // угол
     if (angle < 0) while (angle < 0) angle += PI                     //
     if (angle >= PI) while (angle >= PI) angle -= PI                 //
 

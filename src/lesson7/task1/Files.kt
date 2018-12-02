@@ -73,31 +73,25 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  */
 fun sibilants(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
-    val wrong1 = listOf('ж', 'ч', 'ш', 'щ')
-    val wrong2small = listOf('ы', 'я', 'ю')
-    val wrong2big = listOf('Ы', 'Я', 'Ю')
-    val right2small = listOf('и', 'а', 'у')
-    val right2big = listOf('И', 'А', 'У')
-    var countWrong = 0                    //чтобы узнать была ли предыдущая буква ЖЧШЩ и стоит ли делать проверку на ЫЯЮ
-    var countWrote = 0                    //чтобы узнать была ли буква уже написана
-    var index: Int
-    for (line in File(inputName).readText()) {
-        if (line.toLowerCase() !in wrong2small) countWrong = 0
-        if (line.toLowerCase() in wrong1) countWrong = 1
-        if (line in wrong2small && countWrong == 1) {
-            index = wrong2small.indexOf(line)
-            outputStream.write(right2small[index].toString())
-            countWrote = 1
-            countWrong = 0
+    val first = listOf('ж', 'ч', 'ш', 'щ')
+    val second = mapOf('ы' to 'и', 'ю' to 'у', 'я' to 'а', 'Ы' to 'И', 'Ю' to 'У', 'Я' to 'А')
+    var let = false
+    for (char in File(inputName).readText()) {
+        if (!let) outputStream.write(char.toString())
+
+        var wroten = false
+        if (let) {
+            for ((falseChar, trueChar) in second) {
+                if (char == falseChar) {
+                    outputStream.write(trueChar.toString())
+                    wroten = true
+                }
+            }
+            if (!wroten) outputStream.write(char.toString())
+            let = false
         }
-        if (line in wrong2big && countWrong == 1) {
-            index = wrong2big.indexOf(line)
-            outputStream.write(right2big[index].toString())
-            countWrote = 1
-            countWrong = 0
-        }
-        if (countWrote == 0) outputStream.write(line.toString())
-        else countWrote = 0
+
+        if (char.toLowerCase() in first) let = true
     }
     outputStream.close()
 }
@@ -128,13 +122,11 @@ fun centerFile(inputName: String, outputName: String) {
     }
 
     for (line in File(inputName).readLines()) {
-        var count = if (line.trim().length % 2 == 0) (maxLength - line.trim().length) / 2
-                    else (maxLength - line.trim().length) / 2
-        while (count > 0) {
-            count--
-            outputStream.write(" ")
-        }
-        outputStream.write(line.trim())
+        val trim = line.trim()
+        val count = if (trim.length % 2 == 0) (maxLength - trim.length) / 2
+                    else (maxLength - trim.length) / 2
+        for (i in 0 until count) outputStream.write(" ")
+        outputStream.write(trim)
         outputStream.newLine()
     }
     outputStream.close()
@@ -191,15 +183,14 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var stabilSpaces = 0                   // стабильное количество пробелов после слова
         var spacesPlus1: Int                   // в скольки пробельных отрезках надо добавить пробел
 
-        for (part in line.trim().split(" ")) {
-            if (part != "") countWords++
-        }
-        for (part in line) if (part != ' ') countLetters++
+        val newLine =  Regex("""[ ]+""").replace(line, " ")
+        for (part in newLine.trim().split(" ")) countWords++
+        for (part in newLine) if (part != ' ') countLetters++
         countSpaces = countWords - 1
         if (countSpaces != 0) stabilSpaces = (maxLength - countLetters) / countSpaces
         spacesPlus1 = maxLength - countLetters - stabilSpaces * countSpaces
 
-        for (part in line.trim().split(" ")) {
+        for (part in newLine.trim().split(" ")) {
             if (countWords > 1) {
                 var newStabilProbels = stabilSpaces
                 outputStream.write(part)
@@ -240,21 +231,15 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  */
 fun top20Words(inputName: String): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
-    val resTop20 = mutableMapOf<String, Int>()
-    var top = 20
-    var reg2: String
     for (line in File(inputName).readLines()) {
-        val reg1 = Regex("""[^ a-zA-Zа-яёА-ЯЁ]*""").replace(line, " ")
+        val reg1 = Regex("""[^a-zA-Zа-яёА-ЯЁ]*""").replace(line, " ")
+        var reg2: String
         for (a in reg1.split("  ")) {
             reg2 = Regex("""[^a-zA-Zа-яёА-ЯЁ]+""").replace(a, "").toLowerCase()
             if (reg2.isNotEmpty()) res[reg2] = res.getOrDefault(reg2, 0) + 1
         }
     }
-    for ((a, b) in res.toList().sortedByDescending { it.second }.toMap().toMutableMap()) {
-        if (top > 0) resTop20[a] = b
-        top--
-    }
-    return resTop20
+    return res.toList().sortedByDescending { it.second }.take(20).toMap()
 }
 
 
@@ -303,11 +288,14 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 for ((a, b) in dictionary) {
                     if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
                         if (line[letter].isUpperCase()) {
-                            var bToMut = ""
-                            for (i in 0..b.length - b.length) bToMut += b[i].toUpperCase()
-                            for (i in 1 until b.length) bToMut += b[i].toLowerCase()
-                            outputStream.write(bToMut)
-                        } else outputStream.write(b.toLowerCase())
+                            if (b != "") {
+                                var bToMut = ""
+                                for (i in 0..b.length - b.length) bToMut += b[i].toUpperCase()
+                                for (i in 1 until b.length) bToMut += b[i].toLowerCase()
+                                outputStream.write(bToMut)
+                            }
+                        }
+                        else outputStream.write(b.toLowerCase())
                         c++
                     }
                 }
@@ -347,31 +335,16 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val resAll = mutableListOf<String>()
     val resLongest = mutableListOf<String>()
-    var wrongNum = 0
     var max = 0
     for (line in File(inputName).readLines()) {
-        for (words in line.split(" ")) {
-            if (words.length > 1) {
-                for (first in 0 until words.length - 1) {
-                    for (others in first + 1 until words.length) {
-                        if (words[first].toLowerCase() == words[others].toLowerCase()) {
-                            wrongNum = 1
-                        }
-                    }
-                }
-                if (wrongNum == 0) resAll.add(words)
-            }
+        for (word in line.split(" ")) {
+            if (word.toLowerCase().toSet().toList() == word.toLowerCase().toList())
+                resAll.add(word)
         }
     }
     if (resAll.isEmpty()) outputStream.close()
-    for (i in 0 until resAll.size) {
-        var l = 0
-        for (j in resAll[i]) l++
-        if (l > max) max = l
-    }
-    for (i in 0 until resAll.size) {
-        if (resAll[i].length == max) resLongest.add(resAll[i])
-    }
+    for (i in 0 until resAll.size) if (resAll[i].length > max) max = resAll[i].length
+    for (i in 0 until resAll.size) if (resAll[i].length == max) resLongest.add(resAll[i])
     if (resLongest.size > 1) {
         for (i in 0..resLongest.size - 2) {
             outputStream.write(resLongest[i])
@@ -691,12 +664,12 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val result = lhv / rhv
-    var umenshaemoe = 0
-    var umenshaemoeString: String
-    var vichitaemoe: Int
-    var ostatok: Int
-    var ostalosTcifr: Int
-    var newTcifra: Int
+    var minuend = 0
+    var minuendString: String
+    var subtrahend: Int
+    var difference: Int
+    var digitCount: Int
+    var newDigit: Int
 
     if (lhv / rhv > 9) {
         // 1 строка
@@ -707,49 +680,49 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         var stop = 0
         for (i in 0 until lhv.toString().length) {
             if (lhv / pow(10.0, (lhv.toString().length - i).toDouble()) / rhv > 1 && stop == 0) {
-                umenshaemoe = (lhv / pow(10.0, (lhv.toString().length - i).toDouble())).toInt()
+                minuend = (lhv / pow(10.0, (lhv.toString().length - i).toDouble())).toInt()
                 stop = 1
             }
         }
-        vichitaemoe = umenshaemoe / rhv * rhv
-        outputStream.write("-$vichitaemoe")
-        for (i in 0..lhv.toString().length - vichitaemoe.toString().length + 2) outputStream.write(" ")
+        subtrahend = minuend / rhv * rhv
+        outputStream.write("-$subtrahend")
+        for (i in 0..lhv.toString().length - subtrahend.toString().length + 2) outputStream.write(" ")
         outputStream.write(result.toString())
         outputStream.newLine()
 
         // 3 строка
-        outputStream.write("".padStart(vichitaemoe.toString().length + 1, '-'))
+        outputStream.write("".padStart(subtrahend.toString().length + 1, '-'))
         outputStream.newLine()
 
         //
-        ostalosTcifr = lhv.toString().length - umenshaemoe.toString().length
+        digitCount = lhv.toString().length - minuend.toString().length
 
         // остальные строки
         if (lhv / rhv > 0) {
-            umenshaemoeString = umenshaemoe.toString()
-            while (ostalosTcifr > 0) {
-                ostatok = umenshaemoeString.toInt() - vichitaemoe
-                newTcifra = lhv / (pow(10.0, ostalosTcifr - 1.0)).toInt() % 10
-                umenshaemoeString = ostatok.toString().plus(newTcifra.toString())
-                vichitaemoe = umenshaemoeString.toInt() / rhv * rhv
-                ostalosTcifr--
+            minuendString = minuend.toString()
+            while (digitCount > 0) {
+                difference = minuendString.toInt() - subtrahend
+                newDigit = lhv / (pow(10.0, digitCount - 1.0)).toInt() % 10
+                minuendString = difference.toString().plus(newDigit.toString())
+                subtrahend = minuendString.toInt() / rhv * rhv
+                digitCount--
 
-                outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - umenshaemoeString.length, ' '))
-                outputStream.write(umenshaemoeString)
+                outputStream.write("".padStart(lhv.toString().length + 1 - digitCount - minuendString.length, ' '))
+                outputStream.write(minuendString)
                 outputStream.newLine()
 
-                outputStream.write("".padStart(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1, ' '))
-                outputStream.write("-$vichitaemoe")
+                outputStream.write("".padStart(lhv.toString().length + 1 - digitCount - subtrahend.toString().length - 1, ' '))
+                outputStream.write("-$subtrahend")
                 outputStream.newLine()
 
-                outputStream.write("".padStart(minOf(lhv.toString().length + 1 - ostalosTcifr - vichitaemoe.toString().length - 1,
-                        lhv.toString().length+1 - ostalosTcifr - umenshaemoeString.length ), ' '))
-                for (i in 0 until maxOf(vichitaemoe.toString().length + 1, umenshaemoeString.length)) outputStream.write("-")
+                outputStream.write("".padStart(minOf(lhv.toString().length + 1 - digitCount - subtrahend.toString().length - 1,
+                        lhv.toString().length+1 - digitCount - minuendString.length ), ' '))
+                for (i in 0 until maxOf(subtrahend.toString().length + 1, minuendString.length)) outputStream.write("-")
                 outputStream.newLine()
             }
 
-            ostatok = umenshaemoeString.toInt() - vichitaemoe
-            outputStream.write(ostatok.toString().padStart(lhv.toString().length + 1, ' '))
+            difference = minuendString.toInt() - subtrahend
+            outputStream.write(difference.toString().padStart(lhv.toString().length + 1, ' '))
         }
         else outputStream.write(lhv.toString().padStart(lhv.toString().length + 1, ' '))
     }
@@ -772,19 +745,19 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             outputStream.write(lhv.toString())
         }
         else {
-            vichitaemoe = lhv / rhv * rhv
-            if (lhv.toString().length > vichitaemoe.toString().length) {
+            subtrahend = lhv / rhv * rhv
+            if (lhv.toString().length > subtrahend.toString().length) {
                 // 1 строка
                 outputStream.write("$lhv | $rhv")
                 outputStream.newLine()
                 // 2 строка
-                outputStream.write("-$vichitaemoe   $result")
+                outputStream.write("-$subtrahend   $result")
                 outputStream.newLine()
                 //3 строка
                 outputStream.write("".padStart(lhv.toString().length, '-'))
                 outputStream.newLine()
                 // 4 строка
-                outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length, ' '))
+                outputStream.write((lhv - subtrahend).toString().padStart(lhv.toString().length, ' '))
                 outputStream.newLine()
             }
             else {
@@ -792,13 +765,13 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 outputStream.write(" $lhv | $rhv")
                 outputStream.newLine()
                 // 2 строка
-                outputStream.write("-$vichitaemoe   $result")
+                outputStream.write("-$subtrahend   $result")
                 outputStream.newLine()
                 // 3 строка
                 outputStream.write("".padStart(lhv.toString().length + 1, '-'))
                 outputStream.newLine()
                 // 4 строка
-                outputStream.write((lhv - vichitaemoe).toString().padStart(lhv.toString().length + 1, ' '))
+                outputStream.write((lhv - subtrahend).toString().padStart(lhv.toString().length + 1, ' '))
                 outputStream.newLine()
             }
         }
