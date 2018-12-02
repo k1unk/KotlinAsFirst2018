@@ -127,8 +127,8 @@ fun diameter(vararg points: Point): Segment {
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
 fun circleByDiameter(diameter: Segment): Circle {
-    val middleX = (diameter.begin.x + diameter.begin.y) / 2
-    val middleY = (diameter.end.x + diameter.end.y) / 2
+    val middleX = (diameter.begin.x + diameter.end.x) / 2
+    val middleY = (diameter.begin.y + diameter.end.y) / 2
     val diam = Point(diameter.begin.x, diameter.begin.y).distance(Point(diameter.end.x, diameter.end.y))
     return Circle(Point(middleX, middleY), diam / 2)
 }

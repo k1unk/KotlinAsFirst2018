@@ -343,16 +343,18 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
         }
     }
     if (resAll.isEmpty()) outputStream.close()
-    for (i in 0 until resAll.size) if (resAll[i].length > max) max = resAll[i].length
-    for (i in 0 until resAll.size) if (resAll[i].length == max) resLongest.add(resAll[i])
-    if (resLongest.size > 1) {
-        for (i in 0..resLongest.size - 2) {
-            outputStream.write(resLongest[i])
-            outputStream.write(", ")
+    else {
+        for (i in 0 until resAll.size) if (resAll[i].length > max) max = resAll[i].length
+        for (i in 0 until resAll.size) if (resAll[i].length == max) resLongest.add(resAll[i])
+        if (resLongest.size > 1) {
+            for (i in 0..resLongest.size - 2) {
+                outputStream.write(resLongest[i])
+                outputStream.write(", ")
+            }
         }
+        for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
+        outputStream.close()
     }
-    for (i in resLongest.size - 1..resLongest.size - 1) outputStream.write(resLongest[i])
-    outputStream.close()
 }
 
 /**
