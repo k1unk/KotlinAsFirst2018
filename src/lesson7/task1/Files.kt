@@ -284,7 +284,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     for (line in File(inputName).readLines()) {
         if (line.isNotEmpty()) {
             for (letter in 0 until line.length) {
-                var c = 0
+                var c = false
                 for ((a, b) in dictionary) {
                     if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
                         if (line[letter].isUpperCase()) {
@@ -296,10 +296,10 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                             }
                         }
                         else outputStream.write(b.toLowerCase())
-                        c++
+                        c = true
                     }
                 }
-                if (c == 0) outputStream.write(line[letter].toString())
+                if (!c) outputStream.write(line[letter].toString())
             }
         }
         outputStream.newLine()
