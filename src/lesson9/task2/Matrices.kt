@@ -59,12 +59,7 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> {
-        val result = createMatrix(height, width, 0)
-        if (width < 1 || height < 1) return result
-        println(result)
-        return result
-}
+fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
 
 /**
  * Сложная
