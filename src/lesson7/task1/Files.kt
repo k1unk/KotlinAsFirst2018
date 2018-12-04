@@ -232,16 +232,14 @@ fun alignFileByWidth(inputName: String, outputName: String) {
 fun top20Words(inputName: String): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
     for (line in File(inputName).readLines()) {
-        val reg1 = Regex("""[^a-zA-Zа-яёА-ЯЁ]*""").replace(line, " ")
-        var reg2: String
-        for (a in reg1.split("  ")) {
-            reg2 = Regex("""[^a-zA-Zа-яёА-ЯЁ]+""").replace(a, "").toLowerCase()
-            if (reg2.isNotEmpty()) res[reg2] = res.getOrDefault(reg2, 0) + 1
+        for (word in line.split(Regex("""[^a-zA-Zа-яёА-ЯЁ]"""))) {
+            if (word.isNotEmpty()) {
+                res[word.toLowerCase()] = res.getOrDefault(word.toLowerCase(), 0) + 1
+            }
         }
     }
     return res.toList().sortedByDescending { it.second }.take(20).toMap()
 }
-
 
 /**
  * Средняя
@@ -278,7 +276,8 @@ fun top20Words(inputName: String): Map<String, Int> {
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
+fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {TODO()}
+/*
     val outputStream = File(outputName).bufferedWriter()
 
     for (line in File(inputName).readLines()) {
@@ -306,6 +305,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     }
     outputStream.close()
 }
+*/
 
 /**
  * Средняя
