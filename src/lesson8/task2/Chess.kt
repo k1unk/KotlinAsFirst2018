@@ -365,4 +365,145 @@ fun knightMoveNumber(start: Square, end: Square): Int = TODO()
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun knightTrajectory(start: Square, end: Square): List<Square> { // не работает
+    val x = start.column
+    val y = start.row
+    val finish = Square(end.column, end.row)
+    var res = mutableListOf<Square>()
+    var ree = mutableListOf<Square>()
+    var thisSq = Square(0,0)
+    var list = mutableListOf(
+            Square(x, y), Square(x, y),
+            Square(x, y), Square(x, y),
+            Square(x, y), Square(x, y),
+            Square(x, y), Square(x, y))
+    println(Square(x,y))
+    println(finish)
+    val RES = mutableListOf<Square>(finish,finish,finish,finish,finish,finish,finish)
+    val xx = listOf(1, 1, -1, -1, 2, 2, -2, -2)
+    val yy = listOf(2, -2, 2, -2, 1, -1, 1, -1)
+    var th: Square
+    var stop=0
+    for (i in 0 until 8) {
+        if (Square(list[i].column + xx[i], list[i].row + yy[i]).inside()) {
+            thisSq = Square(list[i].column + xx[i], list[i].row + yy[i])
+            res.add(thisSq)
+            if (thisSq == finish) {
+                if (res.size < RES.size) {
+                    RES.clear()
+                    res.forEach { RES.add(it) }
+                }
+            }
+
+            else {
+                th = thisSq
+                for (j in 0 until 8) {
+                    if (Square(th.column + xx[j], th.row + yy[j]).inside()) {
+
+                        thisSq = Square(th.column + xx[j], th.row + yy[j])
+                        res.add(thisSq)
+                        println(res)
+                        if (thisSq == finish) {
+                            if (res.size < RES.size) {
+                                RES.clear()
+                                res.forEach { RES.add(it) }
+                            }
+                        }
+                        else {
+                            th = thisSq
+                            for (j3 in 0 until 8) {
+                                if (Square(th.column + xx[j3], th.row + yy[j3]).inside()) {
+                                    thisSq = Square(th.column + xx[j3], th.row + yy[j3])
+                                    res.add(thisSq)
+                                    if (thisSq == finish) {
+                                        if (res.size < RES.size) {
+                                            RES.clear()
+                                            res.forEach { RES.add(it) }
+                                        }
+                                    } else {
+                                        th = thisSq
+                                        for (j4 in 0 until 8) {
+                                            if (Square(th.column + xx[j4], th.row + yy[j4]).inside()) {
+                                                thisSq = Square(th.column + xx[j4], th.row + yy[j4])
+                                                res.add(thisSq)
+                                                if (thisSq == finish) {
+                                                    if (res.size < RES.size) {
+                                                        RES.clear()
+                                                        res.forEach { RES.add(it) }
+                                                    }
+                                                } else {
+                                                    th = thisSq
+                                                    for (j5 in 0 until 8) {
+                                                        if (Square(th.column + xx[j5], th.row + yy[j5]).inside()) {
+                                                            thisSq = Square(th.column + xx[j5], th.row + yy[j5])
+                                                            res.add(thisSq)
+                                                            if (thisSq == finish) {
+                                                                if (res.size < RES.size) {
+                                                                    RES.clear()
+                                                                    res.forEach { RES.add(it) }
+                                                                }
+                                                            } else {
+                                                                th = thisSq
+                                                                for (j6 in 0 until 8) {
+                                                                    if (Square(th.column + xx[j6], th.row + yy[j6]).inside()) {
+                                                                        thisSq = Square(th.column + xx[j6], th.row + yy[j6])
+                                                                        res.add(thisSq)
+                                                                        if (thisSq == finish) {
+                                                                            if (res.size < RES.size) {
+                                                                                RES.clear()
+                                                                                res.forEach { RES.add(it) }
+                                                                            }
+                                                                        }
+                                                                        ree.clear()
+                                                                        res.forEach { ree.add(it) }
+                                                                        res.clear()
+                                                                        for (zzz12 in 0..3) {
+                                                                            res.add(ree[zzz12])
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            ree.clear()
+                                                            res.forEach { ree.add(it) }
+                                                            res.clear()
+                                                            for (zzz12 in 0..2) {
+                                                                res.add(ree[zzz12])
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                ree.clear()
+                                                res.forEach { ree.add(it) }
+                                                res.clear()
+                                                for (zzz12 in 0..1) {
+                                                    res.add(ree[zzz12])
+                                                }
+                                            }
+                                        }
+                                    }
+                                    ree.clear()
+                                    res.forEach { ree.add(it) }
+                                    res.clear()
+                                    for (zzz12 in 0..0) {
+                                        res.add(ree[zzz12])
+                                    }
+                                }
+                            }
+                        }
+                        ree.clear()
+                        res.forEach { ree.add(it) }
+                        res.clear()
+
+                    }
+                }
+            }
+            res.clear()
+        }
+    }
+println(RES)
+var trtrtr= mutableListOf<Square>()
+    trtrtr.add(Square(x,y))
+    RES.forEach { trtrtr.add(it) }
+    println(trtrtr)
+    return trtrtr
+}
