@@ -276,36 +276,8 @@ fun top20Words(inputName: String): Map<String, Int> {
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {TODO()}
-/*
-    val outputStream = File(outputName).bufferedWriter()
+fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) { TODO() }
 
-    for (line in File(inputName).readLines()) {
-        if (line.isNotEmpty()) {
-            for (letter in 0 until line.length) {
-                var c = false
-                for ((a, b) in dictionary) {
-                    if (a.toString().toLowerCase() == line[letter].toString().toLowerCase()) {
-                        if (line[letter].isUpperCase()) {
-                            if (b != "") {
-                                var bToMut = ""
-                                for (i in 0..b.length - b.length) bToMut += b[i].toUpperCase()
-                                for (i in 1 until b.length) bToMut += b[i].toLowerCase()
-                                outputStream.write(bToMut)
-                            }
-                        }
-                        else outputStream.write(b.toLowerCase())
-                        c = true
-                    }
-                }
-                if (!c) outputStream.write(line[letter].toString())
-            }
-        }
-        outputStream.newLine()
-    }
-    outputStream.close()
-}
-*/
 
 /**
  * Средняя
@@ -400,82 +372,7 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    val outputStream = File(outputName).bufferedWriter()
-    var star1 = 0
-    var star2 = 0
-    var star12 = 0
-    var wave = 0
-
-    outputStream.write("<html>")
-    outputStream.newLine()
-    outputStream.write("<body>")
-    outputStream.newLine()
-    outputStream.write("<p>")
-    outputStream.newLine()
-    for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) outputStream.write("</p><p>")
-
-        for (letter in 0 until line.length) {
-            when {
-                (star1 == 0 && line[letter] == '*' && line[letter - 1] != '*' && line[letter + 1] != '*' && star12 == 0) -> {
-                    star1 = 1
-                    star12 = 1
-                    outputStream.write("<i>")
-                }
-                (star1 == 1 && line[letter] == '*' && line[letter - 1] != '*' && line[letter + 1] != '*' && star12 == 1) -> {
-                    star1 = 0
-                    star12 = 0
-                    outputStream.write(("</i>"))
-                }
-
-
-                (star2 == 0 && line[letter] == '*' && line[letter + 1] == '*' && line[letter - 1] != '*') -> {
-                    star2 = 1
-                    star12 = 1
-                    outputStream.write(("<b>"))
-                }
-                (star2 == 0 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] != '*') -> { }
-                (star2 == 0 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] == '*' && star12 == 0) -> {
-                    star12 = 1
-                    outputStream.write("</i>")
-                }
-                (star2 == 1 && line[letter] == '*' && line[letter + 1] == '*' && line[letter - 1] != '*') -> {
-                    star2 = 0
-                    star12 = 0
-                    outputStream.write(("</b>"))
-                }
-                (star2 == 1 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] != '*') -> { }
-                (star2 == 1 && line[letter] == '*' && line[letter - 1] == '*' && line[letter - 2] == '*' && star12 == 1) -> {
-                    star12 = 0
-                    outputStream.write(("<i>"))
-                }
-
-
-                (wave == 0 && line[letter] == '~' && line[letter + 1] == '~' && line[letter - 1] != '~') -> {
-                    wave = 1
-                    outputStream.write(("<s>"))
-                }
-                (wave == 0 && line[letter] == '~' && line[letter - 1] == '~') -> { }
-                (wave == 1 && line[letter] == '~' && line[letter + 1] == '~' && line[letter - 1] != '~') -> {
-                    wave = 0
-                    outputStream.write(("</s>"))
-                }
-                (wave == 1 && line[letter] == '~' && line[letter - 1] == '~') -> { }
-                else -> outputStream.write((line[letter].toString()))
-            }
-        }
-        for (letter in line.length - 1 until line.length - 1) outputStream.write((line[letter].toString()))
-        for (letter in line.length until line.length) outputStream.write(line[letter].toString())
-    }
-    outputStream.write("</p>")
-    outputStream.newLine()
-    outputStream.write("</body>")
-    outputStream.newLine()
-    outputStream.write("</html>")
-    outputStream.newLine()
-    outputStream.close()
-}
+fun markdownToHtmlSimple(inputName: String, outputName: String) { TODO() }
 
 /**
  * Сложная
