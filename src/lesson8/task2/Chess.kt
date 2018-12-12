@@ -325,7 +325,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
 fun knightMoveNumber(start: Square, end: Square): Int =
-        if (start.inside() && end.inside()) knightTrajectory(start,end).size - 1
+        if (start.inside() && end.inside()) knightTrajectory(start, end).size - 1
         else throw IllegalArgumentException()
 
 /**
@@ -472,7 +472,7 @@ fun knightTrajectory(start: Square, end: Square): List<Square> {
                                         }
                                     }
                                     resToDeleteLast.clear()
-                                    for (j in 0..res.size - res.size+1) {
+                                    for (j in 0..res.size - res.size + 1) {
                                         resToDeleteLast.add(res[j])
                                     }
                                     res.clear()
