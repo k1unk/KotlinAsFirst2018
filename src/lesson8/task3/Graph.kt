@@ -1,5 +1,7 @@
 package lesson8.task3
 
+import lesson8.task2.Square
+import lesson8.task2.square
 import java.util.*
 
 class Graph {
@@ -48,6 +50,53 @@ class Graph {
         }
         return -1
     }
+
+    fun bfsForKnightTraectory(start: String, finish: String) = bfsForKnightTraectory(this[start], this[finish])
+
+    private fun bfsForKnightTraectory(start: Vertex, finish: Vertex): List<Square> {
+        val queue = ArrayDeque<Vertex>()
+        var firstList = listOf<Graph.Vertex>()
+        var secondList = listOf<Graph.Vertex>()
+        queue.add(start)
+        var fullDistance = 0
+        val visited = mutableMapOf(start to 0)
+
+        while (queue.isNotEmpty()) {
+            val next = queue.poll()
+            val distance = visited[next]!!
+            if (next == finish) break
+            for (neighbor in next.neighbors) {
+                if (neighbor in visited) continue
+                visited.put(neighbor, distance + 1)
+                firstList += Vertex(neighbor.name)
+                secondList += Vertex(next.name)
+                queue.add(neighbor)
+                fullDistance = distance + 1
+            }
+        }
+
+        var re = listOf<Square>()
+        var f1 = finish
+        var f2 = f1
+        for (i in 0 until fullDistance) {
+            for (yi in firstList.size - 1 downTo 0) {
+                f1 = f2
+                if (firstList[yi] == f1) {
+                    re += square(secondList[yi].name)
+                    f1 = secondList[yi]
+                }
+                f2 = f1
+            }
+        }
+
+        var result = listOf<Square>()
+        for (i in re.size - 1 downTo 0) {
+            result += re[i]
+        }
+        result += square(finish.name)
+        return result
+    }
+
 
     /**
      * Пример

@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson8.task2
 
+import lesson8.task3.Graph
 import kotlin.math.abs
 
 /**
@@ -324,9 +325,36 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
+
+fun createGraph(): Graph {
+    val g = Graph()
+    val knightMoves = listOf(Pair(-1, -2), Pair(-2, -1), Pair(-2, 1), Pair(1, -2),
+            Pair(-1, 2), Pair(2, -1), Pair(1, 2), Pair(2, 1))
+    for (i in 'a'..'h') {
+        for (j in 1..8) {
+            g.addVertex("$i$j")
+        }
+    }
+    for (i in 1..8) {
+        for (j in 1..8) {
+            val a = Square(i, j).notation()
+
+            for (move in knightMoves) {
+                val squareX = i + move.first
+                val squareY = j + move.second
+
+                if (squareX in 1..8 && squareY in 1..8) {
+                    val b = Square(squareX, squareY).notation()
+                    g.connect(a, b)
+                }
+            }
+        }
+    }
+    return g
+}
+
 fun knightMoveNumber(start: Square, end: Square): Int =
-        if (start.inside() && end.inside()) knightTrajectory(start, end).size - 1
-        else throw IllegalArgumentException()
+        createGraph().bfs(start.notation(), end.notation())
 
 /**
  * Очень сложная
@@ -348,153 +376,6 @@ fun knightMoveNumber(start: Square, end: Square): Int =
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> {
-    val x = start.column
-    val y = start.row
-    val finish = Square(end.column, end.row)
-    val res = mutableListOf<Square>()
-    val resToDeleteLast = mutableListOf<Square>()
-    var thisSq: Square
-    var th2: Square
-    var th3: Square
-    var th4: Square
-    var th5: Square
-    var th6: Square
-    val list = mutableListOf(
-            Square(x, y), Square(x, y),
-            Square(x, y), Square(x, y),
-            Square(x, y), Square(x, y),
-            Square(x, y), Square(x, y))
-    val xx = listOf(1, 1, -1, -1, 2, 2, -2, -2)
-    val yy = listOf(2, -2, 2, -2, 1, -1, 1, -1)
-    val resShortest = mutableListOf(finish, finish, finish, finish, finish, finish, finish)     //важен только размер
-                                                                                 //списка (больше 6), а не содержимое
+fun knightTrajectory(start: Square, end: Square): List<Square> =
+        createGraph().bfsForKnightTraectory(start.notation(), end.notation())
 
-    if (Square(x,y) == finish) return listOf(finish)
-
-    for (i1 in 0 until 8) {
-        if (Square(list[i1].column + xx[i1], list[i1].row + yy[i1]).inside()) {
-            thisSq = Square(list[i1].column + xx[i1], list[i1].row + yy[i1])
-            res.add(thisSq)
-            if (thisSq == finish) {
-                if (res.size < resShortest.size) {
-                    resShortest.clear()
-                    res.forEach { resShortest.add(it) }
-                }
-            }
-            else {
-                th2 = thisSq
-                for (i2 in 0 until 8) {
-                    if (Square(th2.column + xx[i2], th2.row + yy[i2]).inside()) {
-                        thisSq = Square(th2.column + xx[i2], th2.row + yy[i2])
-                        res.add(thisSq)
-                        if (thisSq == finish) {
-                            if (res.size < resShortest.size) {
-                                resShortest.clear()
-                                res.forEach { resShortest.add(it) }
-                            }
-                        }
-                        else {
-                            th3 = thisSq
-                            for (i3 in 0 until 8) {
-                                if (Square(th3.column + xx[i3], th3.row + yy[i3]).inside()) {
-                                    thisSq = Square(th3.column + xx[i3], th3.row + yy[i3])
-                                    res.add(thisSq)
-                                    if (thisSq == finish) {
-                                        if (res.size < resShortest.size) {
-                                            resShortest.clear()
-                                            res.forEach { resShortest.add(it) }
-                                        }
-                                    }
-                                    else {
-                                        th4 = thisSq
-                                        for (i4 in 0 until 8) {
-                                            if (Square(th4.column + xx[i4], th4.row + yy[i4]).inside()) {
-                                                thisSq = Square(th4.column + xx[i4], th4.row + yy[i4])
-                                                res.add(thisSq)
-                                                if (thisSq == finish) {
-                                                    if (res.size < resShortest.size) {
-                                                        resShortest.clear()
-                                                        res.forEach { resShortest.add(it) }
-                                                    }
-                                                }
-                                                else {
-                                                    th5 = thisSq
-                                                    for (i5 in 0 until 8) {
-                                                        if (Square(th5.column + xx[i5], th5.row + yy[i5]).inside()) {
-                                                            thisSq = Square(th5.column + xx[i5], th5.row + yy[i5])
-                                                            res.add(thisSq)
-                                                            if (thisSq == finish) {
-                                                                if (res.size < resShortest.size) {
-                                                                    resShortest.clear()
-                                                                    res.forEach { resShortest.add(it) }
-                                                                }
-                                                            }
-                                                            else {
-                                                                th6 = thisSq
-                                                                for (i6 in 0 until 8) {
-                                                                    if (Square(th6.column + xx[i6], th6.row + yy[i6]).inside()) {
-                                                                        thisSq = Square(th6.column + xx[i6], th6.row + yy[i6])
-                                                                        res.add(thisSq)
-                                                                        if (thisSq == finish) {
-                                                                            if (res.size < resShortest.size) {
-                                                                                resShortest.clear()
-                                                                                res.forEach { resShortest.add(it) }
-                                                                            }
-                                                                        }
-
-
-                                                                        resToDeleteLast.clear()
-                                                                        for (j in 0..res.size - res.size + 4) {
-                                                                            resToDeleteLast.add(res[j])
-                                                                        }
-                                                                        res.clear()
-                                                                        resToDeleteLast.forEach { res.add(it) }
-                                                                    }
-                                                                }
-                                                            }
-                                                            resToDeleteLast.clear()
-                                                            for (j in 0..res.size - res.size + 3) {
-                                                                resToDeleteLast.add(res[j])
-                                                            }
-                                                            res.clear()
-                                                            resToDeleteLast.forEach { res.add(it) }
-                                                        }
-                                                    }
-                                                }
-                                                resToDeleteLast.clear()
-                                                for (j in 0..res.size - res.size + 2) {
-                                                    resToDeleteLast.add(res[j])
-                                                }
-                                                res.clear()
-                                                resToDeleteLast.forEach { res.add(it) }
-                                            }
-                                        }
-                                    }
-                                    resToDeleteLast.clear()
-                                    for (j in 0..res.size - res.size + 1) {
-                                        resToDeleteLast.add(res[j])
-                                    }
-                                    res.clear()
-                                    resToDeleteLast.forEach { res.add(it) }
-                                }
-                            }
-                        }
-                        resToDeleteLast.clear()
-                        for (j in 0..res.size - res.size) {
-                            resToDeleteLast.add(res[j])
-                        }
-                        res.clear()
-                        resToDeleteLast.forEach { res.add(it) }
-                    }
-                }
-            }
-            res.clear()
-        }
-    }
-
-    val finalResult = mutableListOf<Square>()
-    finalResult.add(Square(x, y))
-    resShortest.forEach { finalResult.add(it) }
-    return finalResult
-}
