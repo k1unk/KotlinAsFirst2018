@@ -276,7 +276,41 @@ fun top20Words(inputName: String): Map<String, Int> {
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) { TODO() }
+fun transliterate(inputName: String, dictionary: List<String>): Double {
+    var c = 0
+    val str = dictionary.toString()
+    val latinLetters = listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
+    var one = latinLetters.indexOf(str[1].toLowerCase().toString()) + 1
+    var two = str[2]
+    var three = latinLetters.indexOf(str[4].toLowerCase().toString()) + 1
+    var four = str[5]
+    if (one > three) {
+        val dd = one
+        one = three
+        three = dd
+    }
+    if (two > four) {
+        val dd = two
+        two = four
+        four = dd
+    }
+    var kolichestvo = 0
+    var sum = 0.0
+    for (line in File(inputName).readLines()) {
+        c++
+        if (c in one..three) {
+            val stroka = line.split(" ")
+            for (chislo in 0 until stroka.size){
+                if (chislo in two.toInt()-49..four.toInt()-49) {
+                    sum+=stroka[chislo].toDouble()
+                    kolichestvo ++
+                }
+            }
+
+        }
+    }
+    return sum/kolichestvo
+}
 
 
 /**
